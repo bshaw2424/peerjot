@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+<div>{% block title %} Dashboard {% endblock %}</div>
+
+<div>
+  {% block body %}
+  <section class="dashboard">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <h1>Dashboard</h1>
+      <a href="/new_note" class="dashboard-btn btn btn-primary">New Note</a>
+    </div>
+    <table class="table table-striped">
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">pages</th>
+      <th></th>
+      <tbody>
+        <tr>
+          <td style="width: 50%"><a href="#">JavaScriptvsdfs sdgsdgsdf</a></td>
+          <td>today</td>
+          <td>8</td>
+          <td>
+            <form action="">
+              <button class="btn btn-danger">delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 50%">JavaScriptvsdfs sdgsdgsdf</td>
+          <td>today</td>
+          <td>8</td>
+          <td>
+            <form action="">
+              <button class="btn btn-danger">delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  {% endblock %}
+</div>

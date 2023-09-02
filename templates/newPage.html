@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+<div>{% block title %} Dashboard {% endblock %}</div>
+
+<div>
+  {% block body %}
+  <form class="dashboard">
+    <h1>Dashboard</h1>
+    <div>
+      <input
+        type="text"
+        name="page-title"
+        placeholder="Enter password"
+        autocomplete="off"
+        autofocus
+        class="form-control mx-auto w-auto mb-3"
+      />
+      <textarea name="page-textarea" cols="30" rows="10"></textarea>
+    </div>
+  </form>
+  {% endblock %}
+</div>
