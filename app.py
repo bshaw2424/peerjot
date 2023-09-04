@@ -44,6 +44,11 @@ def dashboard():
 def new_route():
     return render_template("notes.html")
 
+
+@app.route("/note")
+def note_page():
+    return render_template("note_page.html")
+
 # @app.route("/logout")
 # def logout():
 
