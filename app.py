@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from models import db, Users
 from flask_migrate import Migrate
+import datetime
 
 load_dotenv()  # take environment variables from .env.
 
@@ -37,7 +38,7 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", time=datetime.datetime.now())
 
 
 @app.route("/new_note")
@@ -45,9 +46,9 @@ def new_route():
     return render_template("notes.html")
 
 
-@app.route("/note")
-def note_page():
-    return render_template("note_page.html")
+@app.route("/note/<string:title>")
+def note_page(title):
+    return render_template("note_page.html", title=title)
 
 # @app.route("/logout")
 # def logout():
