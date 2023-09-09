@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, flash, session, jsonify
+from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from models import db, Users
@@ -49,6 +50,11 @@ def new_route():
 @app.route("/note/<string:title>")
 def note_page(title):
     return render_template("note_page.html", title=title)
+
+
+@app.route("/note/<string:title>/<string:note>/")
+def note(title, note):
+    return render_template("note.html", title="hello", note="new note")
 
 # @app.route("/logout")
 # def logout():
