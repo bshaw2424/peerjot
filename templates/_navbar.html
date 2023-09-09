@@ -1,6 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid container">
-    <a class="navbar-brand" href="#">PeerNotes</a>
+  <div class="container-fluid container d-flex justify-content-between">
+    <a class="navbar-brand" href="/">PeerNotes</a>
+
     <button
       class="navbar-toggler"
       type="button"
@@ -13,18 +14,16 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div
-      class="collapse navbar-collapse justify-content-lg-between"
+      class="collapse navbar-collapse justify-content-xl-end"
       id="navbarNavAltMarkup"
     >
-      <div class="navbar-nav justify-content-lg-between">
-        <a class="nav-link active" aria-current="page" href="/dashboard"
-          >Dashboard</a
-        >
-      </div>
       <div class="d-xl-flex">
-        <a class="nav-link" href="#">Register</a>
+        <a class="nav-link me-3" href="/register">Register</a>
+        <a class="nav-link me-3" href="/login">Login</a>
+        <a class="nav-link active me-3" aria-current="page" href="/dashboard">
+          Dashboard
+        </a>
         <a class="nav-link" href="#">Logout</a>
-        <a class="nav-link" href="#">Login</a>
       </div>
     </div>
   </div>
