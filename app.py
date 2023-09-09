@@ -15,6 +15,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DB_URL')
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+Session(app)
+
+app.secret_key = os.getenv('APP_SECRET')
+
+
 db.init_app(app)
 migrate = Migrate
 
