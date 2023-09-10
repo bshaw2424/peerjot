@@ -2,7 +2,9 @@ import os
 from flask import Flask, render_template, request, flash, session, jsonify
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+from formModels import NoteBlock
 from dotenv import load_dotenv
+import bleach
 from models import db, Users
 from flask_migrate import Migrate
 import datetime
@@ -12,6 +14,7 @@ load_dotenv()  # take environment variables from .env.
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DB_URL')
+
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -52,9 +55,15 @@ def new_route():
     return render_template("notes.html")
 
 
-@app.route("/note/<string:title>")
+@app.route("/note/<string:title>", methods=['GET', 'POST'])
 def note_page(title):
-    return render_template("note_page.html", title=title)
+    if request.method == 'GET':
+        return render_template("note_page.html", title=title)
+    else:
+        title = request.form.get('block-title')
+        body = request.form.get('block-text')
+        newbie = bleach.clean(body)
+        return jsonify(newbie)
 
 
 @app.route("/note/<string:title>/<string:note>/")
