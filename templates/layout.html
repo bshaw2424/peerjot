@@ -26,5 +26,11 @@
       integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/classic/ckeditor.js"></script>
+    <script>
+      ClassicEditor.create(document.querySelector("#editor")).catch(error => {
+        console.error(error);
+      });
+    </script>
   </body>
 </html>

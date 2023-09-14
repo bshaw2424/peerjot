@@ -1,11 +1,8 @@
 <div>
   {% block body %}
-  <section
-    class="block-dashboard"
-    style="display: none; max-width: 70%; margin: 0 auto"
-    id="bookmark"
-  >
-    <form action="">
+
+  <section class="block-dashboard" id="bookmark" style="display: none">
+    <form action="/note/{{ title }}" method="post">
       <input
         type="text"
         class="form-control p-2 mb-3 block-title"
@@ -15,11 +12,12 @@
       />
       <textarea
         cols="50"
-        style="outline: 1px solid black; width: 100%"
+        style="width: 100%; max-height: 9rem; outline: 1px solid yellow"
         class="p-3 block-text"
         name="block-text"
       >
       </textarea>
+
       <div class="my-3 d-flex justify-content-center">
         <button class="btn btn-lg btn-primary me-3">Save</button>
         <a href="#" class="btn btn-lg btn-danger cancel">Cancel</a>

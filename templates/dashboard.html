@@ -9,13 +9,14 @@
       style="display: flex; justify-content: space-between; align-items: center"
       class="mb-3"
     >
-      <h1>Dashboard</h1>
+      <h1>{{username}}</h1>
       <a href="/new_note" class="dashboard-btn btn btn-primary">New Note</a>
     </div>
     <table class="table table-striped">
       <th scope="col">Name</th>
-      <th scope="col">purpose</th>
+      <th scope="col">Subject</th>
       <th scope="col">Date</th>
+      <th></th>
       <th></th>
       <tbody>
         <tr>
@@ -30,6 +31,7 @@
               <button class="btn btn-danger">delete</button>
             </form>
           </td>
+          <td><form class="btn btn-primary" action="">edit</form></td>
         </tr>
         <tr>
           <td style="width: 50%">JavaScriptvsdfs sdgsdgsdf</td>
@@ -41,6 +43,7 @@
               <button class="btn btn-danger">delete</button>
             </form>
           </td>
+          <td><form class="btn btn-primary" action="">edit</form></td>
         </tr>
       </tbody>
     </table>

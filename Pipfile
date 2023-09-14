@@ -11,6 +11,8 @@ flask-sqlalchemy = "*"
 werkzeug = "*"
 flask-migrate = "*"
 flask-session = "*"
+wtforms = "*"
+bleach = "*"
 
 [dev-packages]
 

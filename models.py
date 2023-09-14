@@ -7,9 +7,10 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    id = db.Column(db.Integer, autoincrement=True,
+                   primary_key=True, unique=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
     def __init__(self, username, password, created_on):
@@ -22,8 +23,8 @@ class Notes(db.Model):
     __tablename__ = 'user_notes'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
-    note_title = db.Column(db.String, nullable=False)
-    note_subject = db.Column(db.String, nullable=False)
+    note_title = db.Column(db.String(150), nullable=False)
+    note_subject = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
     def __init__(self, note_title, note_subject, created_on):
@@ -32,15 +33,15 @@ class Notes(db.Model):
         self.created_on = created_on
 
     # Define the relationship with Blocks
-    blocks = db.relationship('Blocks', backref='blocks')
+    blocks = db.relationship('Blocks', backref='note')
 
     # Define the relationship with BookMarks
-    bookmarks = db.relationship('BookMarks', backref='bookmarks')
+    bookmarks = db.relationship('BookMarks', backref='note')
 
     # Define the relationship with SideNotes
-    sidenotes = db.relationship('SideNotes', backref='sidenotes')
+    sidenotes = db.relationship('SideNotes', backref='note')
 
-    page = db.relationship('Page', backref='pagess')
+    page = db.relationship('Page', backref='note')
 
 
 class Page(db.Model):
@@ -48,7 +49,7 @@ class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     page_id = db.Column(db.Integer, ForeignKey(
         'user_notes.id'), nullable=False)
-    page_title = db.Column(db.String(255), nullable=False)
+    page_title = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
     def __init__(self, page_title, created_on):
@@ -59,11 +60,13 @@ class Page(db.Model):
 class Blocks(db.Model):
     __tablename__ = 'blocks'
     id = db.Column(db.Integer, primary_key=True)
+    block_id = db.Column(db.Integer, ForeignKey(
+        'user_notes.id'), nullable=False)
     block_notes = db.Column(db.Text(), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    def __init__(self, user_id, block_notes, created_on):
-        self.user_id = user_id
+    def __init__(self, block_id, block_notes, created_on):
+        self.block_id = block_id
         self.block_notes = block_notes
         self.created_on = created_on
 
@@ -71,12 +74,13 @@ class Blocks(db.Model):
 class BookMarks(db.Model):
     __tablename__ = 'bookmarks'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(255), nullable=False)
+    bookmark_id = db.Column(db.Integer, ForeignKey(
+        'user_notes.id'), nullable=False)
     bookmark = db.Column(db.String(255), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    def __init__(self, user_id, bookmark, created_on):
-        self.user_id = user_id
+    def __init__(self, bookmark_id, bookmark, created_on):
+        self.bookmark_id = bookmark_id
         self.bookmark = bookmark
         self.created_on = created_on
 
@@ -84,11 +88,12 @@ class BookMarks(db.Model):
 class SideNotes(db.Model):
     __tablename__ = 'sidenotes'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(255), nullable=False)
+    sidenote_id = db.Column(db.Integer, ForeignKey(
+        'user_notes.id'), nullable=False)
     sidenotes = db.Column(db.String(255), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    def __init__(self, user_id, sidenotes, created_on):
-        self.user_id = user_id
+    def __init__(self, sidenote_id, sidenotes, created_on):
+        self.sidenote_id = sidenote_id
         self.sidenotes = sidenotes
         self.created_on = created_on
