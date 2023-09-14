@@ -1,6 +1,8 @@
 import os
-from flask import Flask, render_template, request, flash, session, jsonify
+from flask import Flask, render_template, request, flash, session, jsonify, url_for, redirect
+from sqlalchemy.sql import text
 from flask_session import Session
+from helper import error_message
 from werkzeug.security import generate_password_hash, check_password_hash
 from formModels import NoteBlock
 from dotenv import load_dotenv
@@ -8,19 +10,18 @@ import bleach
 from models import db, Users
 from flask_migrate import Migrate
 import datetime
-
+import secrets
+current_date = datetime.datetime.now()
 load_dotenv()  # take environment variables from .env.
 
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DB_URL')
-
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+secret_key = secrets.token_hex(16)
+app.config['SECRET_KEY'] = secret_key
 
 Session(app)
-
-app.secret_key = os.getenv('APP_SECRET')
 
 
 db.init_app(app)
@@ -35,17 +36,27 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html")
+
+    else:
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm = request.form.get("confirm_password")
+
+        flash("account created successfully")
+        return redirect(url_for("login"))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+
     return render_template("login.html")
 
 
-@app.route("/dashboard")
+@app.route("/dashboard", methods=['GET', 'POST'])
 def dashboard():
     return render_template("dashboard.html", time=datetime.datetime.now())
 
@@ -57,13 +68,7 @@ def new_route():
 
 @app.route("/note/<string:title>", methods=['GET', 'POST'])
 def note_page(title):
-    if request.method == 'GET':
-        return render_template("note_page.html", title=title)
-    else:
-        title = request.form.get('block-title')
-        body = request.form.get('block-text')
-        newbie = bleach.clean(body)
-        return jsonify(newbie)
+    return title
 
 
 @app.route("/note/<string:title>/<string:note>/")
@@ -75,5 +80,4 @@ def note(title, note):
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(port=5001)
+    app.run(debug=True)
