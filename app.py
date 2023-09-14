@@ -24,6 +24,11 @@ app.config['SECRET_KEY'] = secret_key
 Session(app)
 
 
+Session(app)
+
+app.secret_key = os.getenv('APP_SECRET')
+
+
 db.init_app(app)
 migrate = Migrate
 
