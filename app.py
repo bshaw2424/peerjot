@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, flash, session, jsonify, url_for, redirect
-from sqlalchemy.sql import text
+from sqlalchemy import text, select
 from flask_session import Session
 from helper import error_message
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,24 +16,29 @@ load_dotenv()  # take environment variables from .env.
 
 app = Flask(__name__)
 
+
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_TYPE'] = 'filesystem'
+app.secret_key = secrets.token_hex(16)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DB_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-secret_key = secrets.token_hex(16)
-app.config['SECRET_KEY'] = secret_key
 
 Session(app)
-
-
-Session(app)
-
-app.secret_key = os.getenv('APP_SECRET')
-
 
 db.init_app(app)
 migrate = Migrate
 
 with app.app_context():
     db.create_all()
+
+
+def check_login(view_func):
+    def wrapped_view(*args, **kwargs):
+        if 'user_id' not in session:
+            # Redirect to the login page if not logged in
+            return redirect(url_for('login'))
+        return view_func(*args, **kwargs)
+    return wrapped_view
 
 
 @app.route("/")
@@ -51,6 +56,13 @@ def register():
         password = request.form.get("password")
         confirm = request.form.get("confirm_password")
 
+        new_user = Users(username=username, password=password,
+                         created_on=current_date)
+
+        db.session.add(new_user)
+        db.session.commit()
+        db.session.close()
+
         flash("account created successfully")
         return redirect(url_for("login"))
 
@@ -58,12 +70,46 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    return render_template("login.html")
+    session.clear()
+
+    if request.method == "POST":
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        username_msg = ""
+        password_msg = ""
+
+        if not username:
+            username_msg = "Username is required"
+        if not password:
+            password_msg = "Password is required"
+
+        user = Users.query.filter_by(
+            username=request.form.get('username')).first()
+
+        if user:
+            session['user_id'] = user.id
+            return redirect('/dashboard')
+        else:
+            return render_template("login.html", username=username_msg, password=password_msg)
+
+    return render_template('login.html')
 
 
-@app.route("/dashboard", methods=['GET', 'POST'])
+@app.route("/dashboard", methods=["GET", "POST"])
+@check_login
 def dashboard():
-    return render_template("dashboard.html", time=datetime.datetime.now())
+
+    if request.method == "GET":
+        if 'user_id' in session:
+            user = session['user_id']
+            result = db.session.query(Users.username).filter(
+                Users.id == user).first()
+            print(result)
+
+            return render_template("dashboard.html", time=datetime.datetime.now(), username=result[0])
+    return render_template('dashboard.html')
 
 
 @app.route("/new_note")
@@ -80,8 +126,12 @@ def note_page(title):
 def note(title, note):
     return render_template("note.html", title="hello", note="new note")
 
-# @app.route("/logout")
-# def logout():
+
+@app.route("/logout")
+def logout():
+    session.pop('user_id', None)
+
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
