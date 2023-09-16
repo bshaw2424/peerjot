@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from formModels import NoteBlock
 from dotenv import load_dotenv
 import bleach
-from models import db, Users
+from models import db, Users, Notes, SideNotes, Blocks, BookMarks
 from flask_migrate import Migrate
 import datetime
 import secrets
@@ -77,6 +77,7 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        # variables if the username/password left blank
         username_msg = ""
         password_msg = ""
 
@@ -85,36 +86,78 @@ def login():
         if not password:
             password_msg = "Password is required"
 
+        # query database user table / get username
         user = Users.query.filter_by(
             username=request.form.get('username')).first()
 
         if user:
+            # session for logged in user
             session['user_id'] = user.id
             return redirect('/dashboard')
         else:
-            return render_template("login.html", username=username_msg, password=password_msg)
+            if username != Users.username or password != Users.password:
+                login_error_message = "username or password invalid"
+                return render_template("login.html", username=username_msg, password=password_msg, error=login_error_message)
 
     return render_template('login.html')
 
 
-@app.route("/dashboard", methods=["GET", "POST"])
+@app.route("/dashboard", methods=["GET", "POST"], endpoint='dashboard')
 @check_login
 def dashboard():
 
     if request.method == "GET":
         if 'user_id' in session:
+            # user session
             user = session['user_id']
-            result = db.session.query(Users.username).filter(
-                Users.id == user).first()
-            print(result)
 
-            return render_template("dashboard.html", time=datetime.datetime.now(), username=result[0])
+            # query to get logged in username
+            get_logged_in_username = db.session.query(Users.username).filter(
+                Users.id == user).first()[0]
+
+            get_user_notes = db.session.query(
+                Notes).filter(Notes.user_id == user)
+
+            total_note_count = db.session.query(
+                Notes).filter(Notes.user_id == user).count()
+
+            db.session.close()
+
+            return render_template("dashboard.html", username=get_logged_in_username, notes=get_user_notes, count=total_note_count, msg="Create your first Note")
     return render_template('dashboard.html')
 
 
-@app.route("/new_note")
+@app.route("/new_note", methods=["GET", "POST"], endpoint='new_note')
+@check_login
 def new_route():
-    return render_template("notes.html")
+
+    if request.method == "POST":
+        user = session['user_id']
+        # form data
+
+        title = request.form.get("note-title")
+        subject = request.form.get("note-subject")
+
+        title_msg = ""
+        subject_msg = ""
+
+        # create new note and add to database
+        new_note = Notes(note_title=title, user_id=user, note_subject=subject,
+                         created_on=current_date)
+
+        if not title:
+            title_msg = "Note title is required"
+        if not subject:
+            subject_msg = "Note Subject is required"
+
+        db.session.add(new_note)
+        db.session.commit()
+        db.session.close()
+
+        return redirect('/dashboard')
+
+    else:
+        return render_template("notes.html")
 
 
 @app.route("/note/<string:title>", methods=['GET', 'POST'])
@@ -130,7 +173,7 @@ def note(title, note):
 @app.route("/logout")
 def logout():
     session.pop('user_id', None)
-
+    flash("Successfully logged out")
     return redirect(url_for('index'))
 
 
