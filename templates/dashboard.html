@@ -9,9 +9,12 @@
       style="display: flex; justify-content: space-between; align-items: center"
       class="mb-3"
     >
-      <h1>{{username}}</h1>
+      <h1>{{username}} - ({{ count }})</h1>
       <a href="/new_note" class="dashboard-btn btn btn-primary">New Note</a>
     </div>
+    {% if count < 1 %}
+    <div style="border: 1px solid black">{{msg}}</div>
+    {% else %}
     <table class="table table-striped">
       <th scope="col">Name</th>
       <th scope="col">Subject</th>
@@ -19,32 +22,23 @@
       <th></th>
       <th></th>
       <tbody>
+        {% for note in notes %}
         <tr>
-          <td style="width: 50%">
-            <a href="/note/example">JavaScriptvsdfs sdgsdgsdf</a>
+          <td>
+            <a href="/note/example">{{ note.note_title }}</a>
           </td>
-
-          <td>Chemistry</td>
-          <td>{{ time }}</td>
+          <td>{{ note.note_subject }}</td>
+          <td>{{ note.created_on }}</td>
+          <td class="d-flex justify-content-end">
+            <form class="btn btn-primary" action="">edit</form>
+          </td>
           <td>
             <form action="">
               <button class="btn btn-danger">delete</button>
             </form>
           </td>
-          <td><form class="btn btn-primary" action="">edit</form></td>
         </tr>
-        <tr>
-          <td style="width: 50%">JavaScriptvsdfs sdgsdgsdf</td>
-
-          <td>Computer Science class</td>
-          <td>{{ time }}</td>
-          <td>
-            <form action="">
-              <button class="btn btn-danger">delete</button>
-            </form>
-          </td>
-          <td><form class="btn btn-primary" action="">edit</form></td>
-        </tr>
+        {% endfor %} {% endif %}
       </tbody>
     </table>
   </section>
