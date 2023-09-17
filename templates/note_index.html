@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+<div>{% block title %} note page {% endblock %}</div>
+
+{% block body %}
+<section class="dashboard mt-4">
+  <div class="d-flex justify-content-between">
+    <h1 class="mb-3">Notes</h1>
+    <div>
+      <a href="/new_note" class="dashboard-btn btn btn-primary">New Note</a>
+    </div>
+  </div>
+
+  <article class="row">
+    {% for note in notes %}
+    <div class="col-xl-3">
+      <div
+        class="card d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="card-body">
+          <h3 class="card-title">
+            <a href="/note/{{note.note_title}}">{{ note.note_title }}</a>
+          </h3>
+          <p class="card-text">{{ note.note_subject }}</p>
+          <span>{{ note.created_on.strftime("%x") }}</span>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </article>
+</section>
+{% endblock %}
