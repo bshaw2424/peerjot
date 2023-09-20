@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from formModels import NoteBlock
 from dotenv import load_dotenv
 import bleach
-from models import db, Users, Notes, SideNotes, Blocks, BookMarks
+from models import db, Users, Notes, SideNotes, Blocks, BookMarks, Page
 from flask_migrate import Migrate
 import datetime
 import secrets
@@ -93,38 +93,13 @@ def login():
         if user:
             # session for logged in user
             session['user_id'] = user.id
-            return redirect('/dashboard')
+            return redirect('/notes')
         else:
             if username != Users.username or password != Users.password:
                 login_error_message = "username or password invalid"
                 return render_template("login.html", username=username_msg, password=password_msg, error=login_error_message)
 
     return render_template('login.html')
-
-
-@app.route("/dashboard", methods=["GET", "POST"], endpoint='dashboard')
-@check_login
-def dashboard():
-
-    if request.method == "GET":
-        if 'user_id' in session:
-            # user session
-            user = session['user_id']
-
-            # query to get logged in username
-            get_logged_in_username = db.session.query(Users.username).filter(
-                Users.id == user).first()[0]
-
-            get_user_notes = db.session.query(
-                Notes).filter(Notes.user_id == user)
-
-            total_note_count = db.session.query(
-                Notes).filter(Notes.user_id == user).count()
-
-            db.session.close()
-
-            return render_template("dashboard.html", username=get_logged_in_username, notes=get_user_notes, count=total_note_count, msg="Create your first Note")
-    return render_template('dashboard.html')
 
 
 @app.route("/new_note", methods=["GET", "POST"], endpoint='new_note')
@@ -149,20 +124,57 @@ def new_route():
             title_msg = "Note title is required"
         if not subject:
             subject_msg = "Note Subject is required"
+        try:
+            db.session.add(new_note)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
 
-        db.session.add(new_note)
-        db.session.commit()
-        db.session.close()
-
-        return redirect('/dashboard')
+        return redirect("/notes")
 
     else:
         return render_template("notes.html")
 
 
+@app.route("/notes", methods=["GET", "POST"])
+def notes():
+
+    user = session['user_id']
+
+    notes = db.session.query(
+        Notes).filter(Notes.user_id == user)
+
+    note_count = db.session.query(Notes).filter(Notes.user_id == user).count()
+
+    return render_template("note_index.html", notes=notes, count=note_count, count_message="Currently No Notes")
+
+
 @app.route("/note/<string:title>", methods=['GET', 'POST'])
 def note_page(title):
-    return title
+    user = session['user_id']
+
+    if request.method == "GET":
+        pages = db.session.query(Page).filter(Page.page_id == user)
+        page_length = db.session.query(Page).filter(
+            Page.page_id == user).count()
+        return render_template("note_pages.html", title=title, pages=pages, page_length=page_length, page_message="No pages yet")
+    else:
+        page_title = request.form.get("pageTitle")
+
+        # create new page for current note
+        create_new_page = Page(user, page_title, current_date)
+        print(create_new_page)
+        try:
+            db.session.add(create_new_page)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+        return redirect(f"/note/{title}")
 
 
 @app.route("/note/<string:title>/<string:note>/")
