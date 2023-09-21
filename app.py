@@ -146,26 +146,29 @@ def notes():
     notes = db.session.query(
         Notes).filter(Notes.user_id == user)
 
-    note_count = db.session.query(Notes).filter(Notes.user_id == user).count()
+    note_count = db.session.query(Notes).filter(
+        Notes.user_id == user).count()
 
     return render_template("note_index.html", notes=notes, count=note_count, count_message="Currently No Notes")
 
 
-@app.route("/note/<string:title>", methods=['GET', 'POST'])
-def note_page(title):
-    user = session['user_id']
+@app.route("/note/<string:title>/create_page", methods=["GET", "POST"])
+def create_page(title):
 
-    if request.method == "GET":
-        pages = db.session.query(Page).filter(Page.page_id == user)
-        page_length = db.session.query(Page).filter(
-            Page.page_id == user).count()
-        return render_template("note_pages.html", title=title, pages=pages, page_length=page_length, page_message="No pages yet")
-    else:
-        page_title = request.form.get("pageTitle")
+    if request.method == "POST":
+        user = session['user_id']
+
+        page_title = request.form.get("title")
+
+        note_id = db.session.query(Notes.id).filter(
+            Notes.note_title == title)
 
         # create new page for current note
-        create_new_page = Page(user, page_title, current_date)
+        create_new_page = Page(
+            page_id=note_id, page_title=page_title, created_on=current_date, user_id=user)
         print(create_new_page)
+        print(note_id)
+
         try:
             db.session.add(create_new_page)
             db.session.commit()
@@ -175,11 +178,34 @@ def note_page(title):
             db.session.close()
 
         return redirect(f"/note/{title}")
+    else:
+        return render_template('_pageForm.html', title=title)
 
 
-@app.route("/note/<string:title>/<string:note>/")
-def note(title, note):
-    return render_template("note.html", title="hello", note="new note")
+@app.route("/note/<string:title>", methods=['GET', 'POST'])
+def note_page(title):
+
+    user = session['user_id']
+
+    note_id = db.session.query(Notes.id).filter(
+        Notes.note_title == title)
+
+    pages = db.session.query(Page).filter(Page.page_id == note_id)
+    page_count = pages.count()
+    page_length = db.session.query(Page).filter(
+        Page.page_id == user).count()
+    return render_template("pages_index.html", title=title, page_length=page_length, pages=pages, count=page_count)
+
+
+@app.route("/note/<string:title>/<string:page>/", methods=["GET", "POST"])
+def note(title, page):
+
+    user = session['user_id']
+    note_id = db.session.query(Notes.id).filter(Notes.note_title == title)
+
+    pages = db.session.query(Page).filter(Page.page_title == page)
+
+    return render_template("page.html", title=title, page=pages)
 
 
 @app.route("/logout")
