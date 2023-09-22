@@ -197,7 +197,7 @@ def note_page(title):
     return render_template("pages_index.html", title=title, page_length=page_length, pages=pages, count=page_count)
 
 
-@app.route("/note/<string:title>/<string:page>/", methods=["GET", "POST"])
+@app.route("/note/<string:title>/page/<string:page>/", methods=["GET", "POST"])
 def note(title, page):
 
     user = session['user_id']
@@ -206,6 +206,24 @@ def note(title, page):
     pages = db.session.query(Page).filter(Page.page_title == page)
 
     return render_template("page.html", title=title, page=pages)
+
+
+@app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
+def page_bookmark(title, page):
+
+    user = session['user_id']
+
+    return render_template("bookmark.html", title=title, page=page)
+
+
+@app.route("/note/<string:title>/page/<string:page>/sidenote", methods=["GET", "POST"])
+def page_sidenote(title, page):
+
+    user = session['user_id']
+    print(page)
+    print(title)
+
+    return render_template("sidenote.html", title=title, page=page)
 
 
 @app.route("/logout")
