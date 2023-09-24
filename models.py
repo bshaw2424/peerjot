@@ -27,8 +27,9 @@ class Notes(db.Model):
     note_subject = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    def __init__(self, note_title, note_subject, created_on):
+    def __init__(self, note_title, user_id, note_subject, created_on):
         self.note_title = note_title
+        self.user_id = user_id
         self.note_subject = note_subject
         self.created_on = created_on
 
@@ -47,28 +48,38 @@ class Notes(db.Model):
 class Page(db.Model):
     __tablename__ = 'pages'
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
     page_id = db.Column(db.Integer, ForeignKey(
         'user_notes.id'), nullable=False)
     page_title = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
+    block_id = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, page_title, created_on):
+    def __init__(self, page_id, page_title, created_on, user_id):
+
+        self.page_id = page_id
         self.page_title = page_title
         self.created_on = created_on
+        self.user_id = user_id
 
 
 class Blocks(db.Model):
     __tablename__ = 'blocks'
     id = db.Column(db.Integer, primary_key=True)
-    block_id = db.Column(db.Integer, ForeignKey(
-        'user_notes.id'), nullable=False)
     block_notes = db.Column(db.Text(), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
+    block_id = db.Column(db.Integer, ForeignKey(
+        'user_notes.id'), nullable=False)
+    block_title = db.Column(db.String(100), nullable=False)
+    page_id = db.Column(db.Integer, ForeignKey(
+        'pages.block_id'), nullable=False)
 
-    def __init__(self, block_id, block_notes, created_on):
-        self.block_id = block_id
+    def __init__(self, block_notes, created_on, block_id, block_title, page_id):
         self.block_notes = block_notes
         self.created_on = created_on
+        self.block_id = block_id
+        self.block_title = block_title
+        self.page_id = page_id
 
 
 class BookMarks(db.Model):
