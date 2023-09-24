@@ -117,8 +117,12 @@ def new_route():
         subject_msg = ""
 
         # create new note and add to database
-        new_note = Notes(note_title=title, user_id=user, note_subject=subject,
-                         created_on=current_date)
+        new_note = Notes(
+            note_title=title,
+            user_id=user,
+            note_subject=subject,
+            created_on=current_date
+        )
 
         if not title:
             title_msg = "Note title is required"
@@ -165,9 +169,11 @@ def create_page(title):
 
         # create new page for current note
         create_new_page = Page(
-            page_id=note_id, page_title=page_title, created_on=current_date, user_id=user)
-        print(create_new_page)
-        print(note_id)
+            page_id=note_id,
+            page_title=page_title,
+            created_on=current_date,
+            user_id=user
+        )
 
         try:
             db.session.add(create_new_page)
@@ -184,9 +190,7 @@ def create_page(title):
 
 @app.route("/note/<string:title>", methods=['GET', 'POST'])
 def note_page(title):
-
     user = session['user_id']
-
     note_id = db.session.query(Notes.id).filter(
         Notes.note_title == title)
 
@@ -197,15 +201,50 @@ def note_page(title):
     return render_template("pages_index.html", title=title, page_length=page_length, pages=pages, count=page_count)
 
 
-@app.route("/note/<string:title>/page/<string:page>/", methods=["GET", "POST"])
-def note(title, page):
+@app.route("/note/<string:title>/page/<string:page>/new_block", methods=["GET", "POST"])
+def block_form(title, page):
 
+    if request.method == "POST":
+        user = session['user_id']
+
+        block_title = request.form.get('block-title')
+        block_body = request.form.get('block-body')
+
+        sanitize_block_title = bleach.clean(block_title)
+        sanitize_block_body = bleach.clean(block_body)
+
+        new_block = Blocks(
+            block_notes=sanitize_block_body,
+            block_title=sanitize_block_title,
+            created_on=current_date,
+            block_id=user
+        )
+
+        try:
+            db.session.add(new_block)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+        return redirect(f"/note/{title}/page/{page}")
+    else:
+        blocking = "hello"
+        return render_template("_page_layout.html", blocks=blocking, title=title, page=page)
+
+
+@app.route("/note/<string:title>/page/<string:page>/", methods=["GET"])
+def note(title, page):
     user = session['user_id']
+
     note_id = db.session.query(Notes.id).filter(Notes.note_title == title)
 
-    pages = db.session.query(Page).filter(Page.page_title == page)
+    page = db.session.query(Page).filter(Page.page_title == page)
+    blocks = db.session.query(Blocks).filter(
+        Blocks.page_id == Page.id)
 
-    return render_template("page.html", title=title, page=pages)
+    return render_template("page.html", title=title, page=page, blocks=blocks)
 
 
 @app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
