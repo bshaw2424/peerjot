@@ -201,6 +201,22 @@ def note_page(title):
     return render_template("pages_index.html", title=title, page_length=page_length, pages=pages, count=page_count)
 
 
+@app.route("/note/<string:title>/page/<string:page>/", methods=["GET"])
+def note(title, page):
+    user = session['user_id']
+
+    note_id = db.session.query(Page).filter(Page.page_title == page)
+
+    get_page_id = db.session.query(Page.id).filter(Page.page_title == page)
+
+    blocks = db.session.query(Blocks).filter(
+        Blocks.page_id == get_page_id)
+
+    print(page)
+
+    return render_template("page.html", title=title, page=page, blocks=blocks)
+
+
 @app.route("/note/<string:title>/page/<string:page>/new_block", methods=["GET", "POST"])
 def block_form(title, page):
 
@@ -213,12 +229,18 @@ def block_form(title, page):
         sanitize_block_title = bleach.clean(block_title)
         sanitize_block_body = bleach.clean(block_body)
 
+        get_page = db.session.query(Page).filter(
+            Page.page_title == page).first()
+
         new_block = Blocks(
             block_notes=sanitize_block_body,
             block_title=sanitize_block_title,
             created_on=current_date,
-            block_id=user
+            block_id=user,
+            page_id=get_page.id
         )
+
+        print(new_block)
 
         try:
             db.session.add(new_block)
@@ -231,20 +253,7 @@ def block_form(title, page):
         return redirect(f"/note/{title}/page/{page}")
     else:
         blocking = "hello"
-        return render_template("_page_layout.html", blocks=blocking, title=title, page=page)
-
-
-@app.route("/note/<string:title>/page/<string:page>/", methods=["GET"])
-def note(title, page):
-    user = session['user_id']
-
-    note_id = db.session.query(Notes.id).filter(Notes.note_title == title)
-
-    page = db.session.query(Page).filter(Page.page_title == page)
-    blocks = db.session.query(Blocks).filter(
-        Blocks.page_id == Page.id)
-
-    return render_template("page.html", title=title, page=page, blocks=blocks)
+        return render_template("block.html", blocks=blocking, title=title, page=page)
 
 
 @app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
@@ -263,6 +272,14 @@ def page_sidenote(title, page):
     print(title)
 
     return render_template("sidenote.html", title=title, page=page)
+
+
+@app.route("/note/<string:title>/page/<string:page>/block/<int:id>/edit", methods=["GET", "POST"])
+def page_edit(title, page, id):
+
+    user = session['user_id']
+    block = db.session.query(Blocks).filter(Blocks.id == id)
+    return render_template("editBlock.html", title=title, page=page, block=block)
 
 
 @app.route("/logout")
