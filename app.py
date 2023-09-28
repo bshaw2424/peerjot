@@ -143,6 +143,7 @@ def new_route():
 
 
 @app.route("/notes", methods=["GET", "POST"])
+@check_login
 def notes():
 
     user = session['user_id']
@@ -203,18 +204,23 @@ def note_page(title):
 
 @app.route("/note/<string:title>/page/<string:page>/", methods=["GET"])
 def note(title, page):
+
     user = session['user_id']
 
     note_id = db.session.query(Page).filter(Page.page_title == page)
 
     get_page_id = db.session.query(Page.id).filter(Page.page_title == page)
 
+    get_bookmark_id = db.session.query(
+        BookMarks).filter(BookMarks.page_id == get_page_id)
+
+    bookmark_total = db.session.query(BookMarks).count()
+    sidenote_total = db.session.query(SideNotes).count()
+
     blocks = db.session.query(Blocks).filter(
         Blocks.page_id == get_page_id)
 
-    print(page)
-
-    return render_template("page.html", title=title, page=page, blocks=blocks)
+    return render_template("page.html", title=title, page=page, blocks=blocks, bookmark_total=bookmark_total, sidenote_total=sidenote_total, bookmarks=get_bookmark_id)
 
 
 @app.route("/note/<string:title>/page/<string:page>/new_block", methods=["GET", "POST"])
@@ -240,8 +246,6 @@ def block_form(title, page):
             page_id=get_page.id
         )
 
-        print(new_block)
-
         try:
             db.session.add(new_block)
             db.session.commit()
@@ -259,19 +263,61 @@ def block_form(title, page):
 @app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
 def page_bookmark(title, page):
 
-    user = session['user_id']
+    if request.method == "POST":
 
-    return render_template("bookmark.html", title=title, page=page)
+        # sesssion id of he logged in user
+        user = session['user_id']
+
+        # get the name field from the form (url / title)
+        bookmark_url = request.form.get('bookmark_url')
+        bookmark_title = request.form.get('bookmark_title')
+
+        page_id = db.session.query(Page.id).filter(Page.page_title == page)
+
+        new_bookmark = BookMarks(
+            user_id=user,
+            bookmark_url=bookmark_url,
+            created_on=current_date,
+            page_id=page_id,
+            bookmark_title=bookmark_title
+        )
+        print(new_bookmark)
+        try:
+            db.session.add(new_bookmark)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+        return redirect(f"/note/{title}/page/{page}")
+    else:
+        return render_template("bookmark.html", title=title, page=page)
 
 
 @app.route("/note/<string:title>/page/<string:page>/sidenote", methods=["GET", "POST"])
 def page_sidenote(title, page):
 
-    user = session['user_id']
-    print(page)
-    print(title)
+    if request.method == "POST":
+        user = session['user_id']
+        sidenote = request.form.get("sidenote")
+        page_id = db.session.query(Page.id).filter(Page.page_title == page)
 
-    return render_template("sidenote.html", title=title, page=page)
+        new_sidenote = SideNotes(
+            user_id=user,
+            sidenotes=sidenote,
+            created_on=current_date,
+            page_id=page_id
+        )
+
+        db.session.add(new_sidenote)
+        db.session.commit()
+
+        db.session.close()
+
+        return redirect(f"/note/{title}/page/{page}")
+    else:
+        return render_template("sidenote.html", title=title, page=page)
 
 
 @app.route("/note/<string:title>/page/<string:page>/block/<int:id>/edit", methods=["GET", "POST"])
