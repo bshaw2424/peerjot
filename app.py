@@ -71,7 +71,7 @@ def register():
 def login():
 
     session.clear()
-
+    login_error_message = ""
     if request.method == "POST":
 
         username = request.form.get("username")
@@ -86,6 +86,9 @@ def login():
         if not password:
             password_msg = "Password is required"
 
+        if username != Users.username or password != Users.password:
+            login_error_message = "username or password invalid"
+
         # query database user table / get username
         user = Users.query.filter_by(
             username=request.form.get('username')).first()
@@ -95,9 +98,8 @@ def login():
             session['user_id'] = user.id
             return redirect('/notes')
         else:
-            if username != Users.username or password != Users.password:
-                login_error_message = "username or password invalid"
-                return render_template("login.html", username=username_msg, password=password_msg, error=login_error_message)
+
+            return render_template("login.html", username=username_msg, password=password_msg, error=login_error_message)
 
     return render_template('login.html')
 
@@ -118,8 +120,8 @@ def new_route():
 
         # create new note and add to database
         new_note = Notes(
-            note_title=title,
             user_id=user,
+            note_title=title,
             note_subject=subject,
             created_on=current_date
         )
@@ -173,7 +175,6 @@ def create_page(title):
             page_id=note_id,
             page_title=page_title,
             created_on=current_date,
-            user_id=user
         )
 
         try:
@@ -239,11 +240,10 @@ def block_form(title, page):
             Page.page_title == page).first()
 
         new_block = Blocks(
-            block_notes=sanitize_block_body,
-            block_title=sanitize_block_title,
             created_on=current_date,
-            block_id=user,
-            page_id=get_page.id
+            block_title=sanitize_block_title,
+            page_id=get_page.id,
+            block_notes=sanitize_block_body,
         )
 
         try:
@@ -272,10 +272,12 @@ def page_bookmark(title, page):
         bookmark_url = request.form.get('bookmark_url')
         bookmark_title = request.form.get('bookmark_title')
 
-        page_id = db.session.query(Page.id).filter(Page.page_title == page)
+        page_id = db.session.query(Page, BookMarks).filter(
+            BookMarks.page_id == Page.id)
+
+        print(page_id)
 
         new_bookmark = BookMarks(
-            user_id=user,
             bookmark_url=bookmark_url,
             created_on=current_date,
             page_id=page_id,
@@ -285,8 +287,9 @@ def page_bookmark(title, page):
         try:
             db.session.add(new_bookmark)
             db.session.commit()
-        except:
+        except Exception as e:
             db.session.rollback()
+            return f"Error: {str(e)}"
         finally:
             db.session.close()
 
@@ -304,7 +307,6 @@ def page_sidenote(title, page):
         page_id = db.session.query(Page.id).filter(Page.page_title == page)
 
         new_sidenote = SideNotes(
-            user_id=user,
             sidenotes=sidenote,
             created_on=current_date,
             page_id=page_id
