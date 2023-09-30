@@ -72,36 +72,27 @@ def login():
 
     session.clear()
     login_error_message = ""
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
     if request.method == "POST":
-
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        # variables if the username/password left blank
-        username_msg = ""
-        password_msg = ""
-
-        if not username:
-            username_msg = "Username is required"
-        if not password:
-            password_msg = "Password is required"
-
-        if username != Users.username or password != Users.password:
-            login_error_message = "username or password invalid"
-
-        # query database user table / get username
-        user = Users.query.filter_by(
-            username=request.form.get('username')).first()
+        # Query database user table to get a user with the specified username
+        user = db.session.query(Users).filter(
+            Users.username == username).first()
 
         if user:
-            # session for logged in user
-            session['user_id'] = user.id
-            return redirect('/notes')
+            # A user with the specified username was found
+            if user.username == username and user.password == password:
+                # Set the user_id in the session for a successful login
+                session['user_id'] = user.id
+                return redirect('/notes')
         else:
+            login_error_message = "Incorrect username or password"
+    else:
+        login_error_message = ""
 
-            return render_template("login.html", username=username_msg, password=password_msg, error=login_error_message)
-
-    return render_template('login.html')
+    return render_template("login.html", error=login_error_message)
 
 
 @app.route("/new_note", methods=["GET", "POST"], endpoint='new_note')
