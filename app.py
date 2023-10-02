@@ -79,13 +79,13 @@ def login():
     if request.method == "POST":
         # Query database user table to get a user with the specified username
         user = db.session.query(Users).filter(
-            Users.username == username).first()
+            Users.username == username)
 
         if user:
             # A user with the specified username was found
-            if user.username == username and user.password == password:
+            if user[0].username == username and user[0].password == password:
                 # Set the user_id in the session for a successful login
-                session['user_id'] = user.id
+                session['user_id'] = user[0].id
                 return redirect('/notes')
         else:
             login_error_message = "Incorrect username or password"
@@ -204,15 +204,22 @@ def note(title, page):
     get_page_id = db.session.query(Page.id).filter(Page.page_title == page)
 
     get_bookmark_id = db.session.query(
-        BookMarks).filter(BookMarks.page_id == get_page_id)
+        BookMarks).all()
 
-    bookmark_total = db.session.query(BookMarks).count()
-    sidenote_total = db.session.query(SideNotes).count()
+    get_sidenote_id = db.session.query(
+        SideNotes).filter(Page.page_title != page).all()
+
+    bookmark_total = db.session.query(BookMarks).filter(
+        Page.id == BookMarks.page_id).count()
+    sidenote_total = db.session.query(SideNotes).filter(
+        SideNotes.page_id == Page.id).count()
 
     blocks = db.session.query(Blocks).filter(
         Blocks.page_id == get_page_id)
 
-    return render_template("page.html", title=title, page=page, blocks=blocks, bookmark_total=bookmark_total, sidenote_total=sidenote_total, bookmarks=get_bookmark_id)
+    print(get_sidenote_id)
+
+    return render_template("page.html", title=title, page=page, blocks=blocks, bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
 
 
 @app.route("/note/<string:title>/page/<string:page>/new_block", methods=["GET", "POST"])
@@ -251,6 +258,11 @@ def block_form(title, page):
         return render_template("block.html", blocks=blocking, title=title, page=page)
 
 
+@app.route("/note/<string:title>/page/<string:page>/block/<string:block_title>")
+def block_page(title, page, block_title):
+    return title
+
+
 @app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
 def page_bookmark(title, page):
 
@@ -263,15 +275,15 @@ def page_bookmark(title, page):
         bookmark_url = request.form.get('bookmark_url')
         bookmark_title = request.form.get('bookmark_title')
 
-        page_id = db.session.query(Page, BookMarks).filter(
-            BookMarks.page_id == Page.id)
+        page = db.session.query(Page.id).filter(
+            Page.page_title == page)
 
-        print(page_id)
+        print(page[0].id)
 
         new_bookmark = BookMarks(
             bookmark_url=bookmark_url,
             created_on=current_date,
-            page_id=page_id,
+            page_id=page[0].id,
             bookmark_title=bookmark_title
         )
         print(new_bookmark)
@@ -283,8 +295,8 @@ def page_bookmark(title, page):
             return f"Error: {str(e)}"
         finally:
             db.session.close()
-
-        return redirect(f"/note/{title}/page/{page}")
+        redirect_url = f"/note/{title}/page/{page}"
+        return redirect(redirect_url)
     else:
         return render_template("bookmark.html", title=title, page=page)
 
