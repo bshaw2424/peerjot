@@ -204,22 +204,26 @@ def note(title, page):
     get_page_id = db.session.query(Page.id).filter(Page.page_title == page)
 
     get_bookmark_id = db.session.query(
-        BookMarks).all()
+        BookMarks).filter(Page.page_title == page, BookMarks.page_id == Page.id).all()
+    print(get_bookmark_id)
+
+    id = db.session.query(Blocks.id).filter(
+        Page.page_title == page, Blocks.page_id == Page.id).first()
 
     get_sidenote_id = db.session.query(
-        SideNotes).filter(Page.page_title != page).all()
+        SideNotes).filter(Page.page_title == page, SideNotes.page_id == Page.id).all()
 
-    bookmark_total = db.session.query(BookMarks).filter(
-        Page.id == BookMarks.page_id).count()
+    bookmark_total = db.session.query(Page).filter(
+        Page.page_title == page, BookMarks.page_id == Page.id).count()
+    print(page)
+
     sidenote_total = db.session.query(SideNotes).filter(
-        SideNotes.page_id == Page.id).count()
+        Page.page_title == page, SideNotes.page_id == Page.id).count()
 
     blocks = db.session.query(Blocks).filter(
         Blocks.page_id == get_page_id)
 
-    print(get_sidenote_id)
-
-    return render_template("page.html", title=title, page=page, blocks=blocks, bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
+    return render_template("page.html", title=title, page=page, blocks=blocks, id=id[0], bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
 
 
 @app.route("/note/<string:title>/page/<string:page>/new_block", methods=["GET", "POST"])
@@ -325,12 +329,17 @@ def page_sidenote(title, page):
         return render_template("sidenote.html", title=title, page=page)
 
 
-@app.route("/note/<string:title>/page/<string:page>/block/<int:id>/edit", methods=["GET", "POST"])
+@app.route("/note/<string:title>/page/<string:page>/block/<string:block_title>/edit", methods=["GET", "POST"])
 def page_edit(title, page, id):
 
-    user = session['user_id']
-    block = db.session.query(Blocks).filter(Blocks.id == id)
-    return render_template("editBlock.html", title=title, page=page, block=block)
+    if request.method == "GET":
+        user = session['user_id']
+
+        block = db.session.query(Blocks).filter(Page.page_title == page)
+
+        print(block[0].id)
+
+        return render_template("editBlock.html", title=title, page=page, block=block)
 
 
 @app.route("/logout")
