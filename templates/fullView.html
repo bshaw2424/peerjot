@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+<div>{% block title %} Full View Page {% endblock %}</div>
+{% block body %}
+<article
+  class="my-3"
+  style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  "
+>
+  <h1 class="mb-3">
+    ({{ title | capitalize }}) - {{ page | capitalize }} Notes
+  </h1>
+  {% for page in full_page %}
+  <div style="width: 100%">
+    <p>{{ page.block_title }}</p>
+    <div>{{ page.block_notes | safe }}</div>
+  </div>
+  {% endfor %}
+</article>
+
+<section class="mb-3">
+  <h2 class="bg-dark text-white p-3">Useful Resources</h2>
+  {% for bookmark in bookmarks %}
+
+  <div class="card mb-3" style="border: none">
+    <span style="text-decoration: underline">
+      {{ bookmark.bookmark_title }}</span
+    >
+    <span>{{ bookmark.bookmark_url }}</span>
+  </div>
+
+  {% endfor %}
+</section>
+<div class="mb-3 d-flex align-items-center" style="width: 100%">
+  <a
+    style="width: 40%; margin: 0 auto"
+    class="btn btn-danger"
+    href="/note/{{ title }}/page/{{ page }}"
+  >
+    Exit
+  </a>
+</div>
+{% endblock %}
