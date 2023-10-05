@@ -205,7 +205,6 @@ def note(title, page):
 
     get_bookmark_id = db.session.query(
         BookMarks).filter(Page.page_title == page, BookMarks.page_id == Page.id).all()
-    print(get_bookmark_id)
 
     id = db.session.query(Blocks.id).filter(
         Page.page_title == page, Blocks.page_id == Page.id).first()
@@ -215,13 +214,15 @@ def note(title, page):
 
     bookmark_total = db.session.query(Page).filter(
         Page.page_title == page, BookMarks.page_id == Page.id).count()
-    print(page)
 
     sidenote_total = db.session.query(SideNotes).filter(
         Page.page_title == page, SideNotes.page_id == Page.id).count()
 
     blocks = db.session.query(Blocks).filter(
         Blocks.page_id == get_page_id)
+
+    notes = db.session.query(SideNotes).filter(
+        SideNotes.page_id == get_page_id)
 
     return render_template("page.html", title=title, page=page, blocks=blocks, id=id[0], bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
 
@@ -262,9 +263,14 @@ def block_form(title, page):
         return render_template("block.html", blocks=blocking, title=title, page=page)
 
 
-@app.route("/note/<string:title>/page/<string:page>/block/<string:block_title>")
-def block_page(title, page, block_title):
-    return title
+@app.route("/note/<string:title>/page/<string:page>/full_view", methods=["GET"])
+def full_view(title, page):
+    if request.method == "GET":
+        full_page = db.session.query(Blocks).filter(
+            Page.page_title == page, Blocks.page_id == Page.id)
+        bookmarks = db.session.query(BookMarks).filter(
+            Page.page_title == page, BookMarks.page_id == Page.id)
+        return render_template("fullView.html", title=title, page=page, full_page=full_page, bookmarks=bookmarks)
 
 
 @app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
@@ -329,17 +335,42 @@ def page_sidenote(title, page):
         return render_template("sidenote.html", title=title, page=page)
 
 
-@app.route("/note/<string:title>/page/<string:page>/block/<string:block_title>/edit", methods=["GET", "POST"])
+@app.route("/note/<string:title>/page/<string:page>/block/<int:id>/edit", methods=["GET", "POST"])
 def page_edit(title, page, id):
 
     if request.method == "GET":
         user = session['user_id']
 
-        block = db.session.query(Blocks).filter(Page.page_title == page)
+        blocks = db.session.query(Blocks).filter(
+            Page.page_title == page, Blocks.id == id).first()
 
-        print(block[0].id)
+        print(blocks.block_title)
 
-        return render_template("editBlock.html", title=title, page=page, block=block)
+        return render_template("editBlock.html", title=title, page=page, blocks=blocks)
+
+
+@app.route("/note/<string:title>/page/<string:page>/note/<int:id>/edit", methods=["GET", "POST"])
+def note_edit(title, page, id):
+
+    if request.method == "GET":
+        user = session['user_id']
+
+        notes = db.session.query(SideNotes).filter(
+            Page.page_title == page, SideNotes.id == id).first()
+
+        return render_template("editNote.html", title=title, page=page, notes=notes)
+
+
+@app.route("/note/<string:title>/page/<string:page>/bookmark/<int:id>/edit", methods=["GET", "POST"])
+def bookmark_edit(title, page, id):
+
+    if request.method == "GET":
+        user = session['user_id']
+
+        bookmarks = db.session.query(BookMarks).filter(
+            Page.page_title == page, BookMarks.id == id).first()
+
+        return render_template("editBookmark.html", title=title, page=page, bookmarks=bookmarks)
 
 
 @app.route("/logout")
