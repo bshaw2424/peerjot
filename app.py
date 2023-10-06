@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, flash, session, jsonify, url_for, redirect
-from sqlalchemy import text, select
+from sqlalchemy import text, select, update
 from flask_session import Session
 from helper import error_message
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -346,7 +346,22 @@ def page_edit(title, page, id):
 
         print(blocks.block_title)
 
-        return render_template("editBlock.html", title=title, page=page, blocks=blocks)
+        return render_template("editBlock.html", title=title, page=page, blocks=blocks, id=id)
+    else:
+
+        block_body = request.form.get("block-body")
+        block_title = request.form.get("block-title")
+
+        # Use update() on the query object to update the block's title.
+        update_query = db.session.query(Blocks).filter(Blocks.id == id)
+
+        update_query.update(
+            {"block_title": block_title, "block_notes": block_body})
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(f"/note/{title}/page/{page}")
 
 
 @app.route("/note/<string:title>/page/<string:page>/note/<int:id>/edit", methods=["GET", "POST"])
