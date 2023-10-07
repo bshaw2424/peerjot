@@ -285,15 +285,15 @@ def page_bookmark(title, page):
         bookmark_url = request.form.get('bookmark_url')
         bookmark_title = request.form.get('bookmark_title')
 
-        page = db.session.query(Page.id).filter(
+        page_title = db.session.query(Page.id).filter(
             Page.page_title == page)
 
-        print(page[0].id)
+        print(page_title[0].id)
 
         new_bookmark = BookMarks(
             bookmark_url=bookmark_url,
             created_on=current_date,
-            page_id=page[0].id,
+            page_id=page_title[0].id,
             bookmark_title=bookmark_title
         )
         print(new_bookmark)
@@ -305,8 +305,7 @@ def page_bookmark(title, page):
             return f"Error: {str(e)}"
         finally:
             db.session.close()
-        redirect_url = f"/note/{title}/page/{page}"
-        return redirect(redirect_url)
+        return redirect(f"/note/{title}/page/{page}")
     else:
         return render_template("bookmark.html", title=title, page=page)
 
@@ -373,7 +372,23 @@ def note_edit(title, page, id):
         notes = db.session.query(SideNotes).filter(
             Page.page_title == page, SideNotes.id == id).first()
 
-        return render_template("editNote.html", title=title, page=page, notes=notes)
+        return render_template("editNote.html", title=title, page=page, notes=notes, id=id)
+
+    else:
+
+        update_sidenote = request.form.get("sidenote")
+
+        # Use update() on the query object to update the block's title.
+        sidenote_update_query = db.session.query(
+            SideNotes).filter(SideNotes.id == id)
+
+        sidenote_update_query.update(
+            {"sidenotes": update_sidenote})
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(f"/note/{title}/page/{page}")
 
 
 @app.route("/note/<string:title>/page/<string:page>/bookmark/<int:id>/edit", methods=["GET", "POST"])
@@ -385,7 +400,57 @@ def bookmark_edit(title, page, id):
         bookmarks = db.session.query(BookMarks).filter(
             Page.page_title == page, BookMarks.id == id).first()
 
-        return render_template("editBookmark.html", title=title, page=page, bookmarks=bookmarks)
+        return render_template("editBookmark.html", title=title, page=page, bookmarks=bookmarks, id=id)
+    else:
+
+        bookmark_url = request.form.get("bookmark_url")
+        bookmark_title = request.form.get("bookmark_title")
+
+        # Use update() on the query object to update the block's title.
+        bookmark_query_update = db.session.query(
+            BookMarks).filter(BookMarks.id == id)
+
+        bookmark_query_update.update(
+            {"bookmark_url": bookmark_url, "bookmark_title": bookmark_title})
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(f"/note/{title}/page/{page}")
+
+
+@app.route("/note/<string:title>/page/<string:page>/bookmark/<int:id>", methods=["GET", "DELETE"])
+def delete_bookmark(title, page, id):
+
+    # block_body = request.form.get("block-body")
+    # block_title = request.form.get("block-title")
+
+    # Use update() on the query object to update the block's title.
+    bookmark_delete = db.session.query(
+        BookMarks).filter(BookMarks.id == id).first()
+
+    db.session.delete(bookmark_delete)
+    db.session.commit()
+    db.session.close()
+
+    return redirect(f"/note/{title}/page/{page}")
+
+
+@app.route("/note/<string:title>/page/<string:page>/note/<int:id>", methods=["GET", "DELETE"])
+def delete_sidenote(title, page, id):
+
+    # block_body = request.form.get("block-body")
+    # block_title = request.form.get("block-title")
+
+    # Use update() on the query object to update the block's title.
+    sidenote_delete = db.session.query(
+        SideNotes).filter(SideNotes.id == id).first()
+
+    db.session.delete(sidenote_delete)
+    db.session.commit()
+    db.session.close()
+
+    return redirect(f"/note/{title}/page/{page}")
 
 
 @app.route("/logout")
