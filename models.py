@@ -13,7 +13,7 @@ class Users(db.Model):
     password = db.Column(db.String(50), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    users = db.relationship('Notes', back_populates='notes')
+    users = db.relationship('Notes', back_populates='notes', cascade='delete')
 
     def __init__(self, username, password, created_on):
         self.username = username
@@ -31,7 +31,7 @@ class Notes(db.Model):
 
     # Define the relationship with Blocks
     notes = db.relationship('Users', back_populates='users')
-    pages = db.relationship('Page', back_populates='note')
+    pages = db.relationship('Page', back_populates='note', cascade='delete')
 
     def __init__(self, user_id, note_title, note_subject, created_on):
         self.user_id = user_id
@@ -50,10 +50,13 @@ class Page(db.Model):
 
     # relationship wit notes
     note = db.relationship('Notes', back_populates='pages')
-    # All have relationship with the page modal
-    block = db.relationship('Blocks', back_populates='blocks')
-    bookmark = db.relationship('BookMarks', back_populates='bookmarks')
-    sidenotes = db.relationship('SideNotes', back_populates='sidenote')
+    # All have relationship with the page
+    block = db.relationship(
+        'Blocks', back_populates='blocks', cascade='delete')
+    bookmark = db.relationship(
+        'BookMarks', back_populates='bookmarks', cascade='delete')
+    sidenotes = db.relationship(
+        'SideNotes', back_populates='sidenote', cascade='delete')
 
     def __init__(self, page_id, page_title, created_on):
         self.page_id = page_id
