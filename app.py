@@ -142,7 +142,7 @@ def notes():
     user = session['user_id']
 
     notes = db.session.query(
-        Notes).filter(Notes.user_id == user)
+        Notes).filter(Notes.user_id == user).order_by(Notes.note_title)
 
     note_count = db.session.query(Notes).filter(
         Notes.user_id == user).count()
@@ -210,7 +210,7 @@ def note(title, page):
     get_bookmark_id = db.session.query(
         BookMarks).filter(Page.page_title == page, BookMarks.page_id == Page.id).all()
 
-    id = db.session.query(Blocks.id).filter(
+    id = db.session.query(Blocks).filter(
         Page.page_title == page, Blocks.page_id == Page.id).first()
 
     get_sidenote_id = db.session.query(
@@ -225,10 +225,12 @@ def note(title, page):
     blocks = db.session.query(Blocks).filter(
         Blocks.page_id == get_page_id)
 
+    block_count = blocks.count()
+
     notes = db.session.query(SideNotes).filter(
         SideNotes.page_id == get_page_id)
 
-    return render_template("page.html", title=title, page=page, blocks=blocks, id=id[0], get_user=get_user, bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
+    return render_template("page.html", title=title, page=page, blocks=blocks, id=id, block_count=block_count, get_user=get_user, bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
 
 
 @app.route("/note/<string:title>/page/<string:page>/new_block", methods=["GET", "POST"])
@@ -272,9 +274,15 @@ def full_view(title, page):
     if request.method == "GET":
         full_page = db.session.query(Blocks).filter(
             Page.page_title == page, Blocks.page_id == Page.id)
+
         bookmarks = db.session.query(BookMarks).filter(
             Page.page_title == page, BookMarks.page_id == Page.id)
-        return render_template("fullView.html", title=title, page=page, full_page=full_page, bookmarks=bookmarks)
+
+        block_count = full_page.count()
+
+        bookmark_count = bookmarks.count()
+
+        return render_template("fullView.html", title=title, page=page, full_page=full_page, bookmarks=bookmarks, block_count=block_count, bookmark_count=bookmark_count)
 
 
 @app.route("/note/<string:title>/page/<string:page>/bookmark", methods=["GET", "POST"])
@@ -477,7 +485,10 @@ def delete_block(title, page, id):
 @app.route("/note/<string:title>/page/<int:id>/delete", methods=["GET", "DELETE"])
 def delete_page(title, id):
 
-    page_delete = db.session.query(Page).filter(Page.id == id).first()
+    user = session['user_id']
+
+    page_delete = db.session.query(Page).filter(
+        Users.id == user, Page.id == id).first()
 
     db.session.delete(page_delete)
     db.session.commit()
@@ -486,13 +497,62 @@ def delete_page(title, id):
     return redirect(f"/note/{title}")
 
 
-@app.route("/note/<string:title>/page/<string:page>/edit", methods=["GET", "DELETE"])
+@app.route("/note/<string:title>/page/<string:page>/edit", methods=["GET", "POST"])
 def edit_page(title, page):
 
-    page_edit = db.session.query(Page).filter(
-        Page.page_title == page).first()
+    if request.method == "GET":
+        page_edit = db.session.query(Page).filter(
+            Page.page_title == page).first()
 
-    return render_template("editPage.html")
+        return render_template("editPage.html", page_edit=page_edit, title=title, page=page)
+    else:
+        form_title = request.form.get("title")
+
+        page_query_update = db.session.query(
+            Page).filter(Page.page_title == page)
+
+        page_query_update.update({"page_title": form_title})
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(f"/note/{title}")
+
+
+@app.route("/note/<string:title>/edit", methods=["GET", "POST"])
+def edit_note(title):
+
+    if request.method == "GET":
+        user = session['user_id']
+
+        notes = db.session.query(
+            Notes).filter(Notes.user_id == user, Notes.note_title == title).first()
+
+        return render_template("editMainNote.html", notes=notes)
+    else:
+        note_title = request.form.get("title")
+
+        note_query_update = db.session.query(
+            Notes).filter(Notes.note_title == title)
+
+        note_query_update.update({"note_title": note_title})
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(f"/notes")
+
+
+@app.route("/note/<int:id>/delete", methods=["GET", "DELETE"])
+def delete_note(id):
+
+    note_delete = db.session.query(Notes).filter(Notes.id == id).first()
+
+    db.session.delete(note_delete)
+    db.session.commit()
+    db.session.close()
+
+    return redirect("/notes")
 
 
 @app.route("/logout")
