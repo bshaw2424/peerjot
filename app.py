@@ -45,7 +45,7 @@ def check_login(view_func):
     def wrapped_view(*args, **kwargs):
         if 'user_id' not in session:
             # Redirect to the login page if not logged in
-            return redirect(url_for('login'))
+            return redirect("/login")
         return view_func(*args, **kwargs)
     return wrapped_view
 
