@@ -1,0 +1,41 @@
+{% extends "index/layout.html" %}
+
+<div>{% block title %} Block Form {% endblock %}</div>
+
+{% block body %}
+<section class="block-dashboard my-3 text-center">
+  <h1>Edit Block</h1>
+  <form
+    action="/note/{{ title }}/page/{{ page }}/block/{{ id }}/edit"
+    method="post"
+    class="mt-3 px-3"
+  >
+    <input
+      type="text"
+      class="form-control p-2 mb-3 block-title"
+      name="block-title"
+      placeholder="Enter block title"
+      style="max-width: 40%"
+      value="{{ blocks.block_title }}"
+    />
+    <textarea
+      cols="50"
+      class="p-3 block-text"
+      name="block-body"
+      id="editor"
+      placeholder="Enter block body"
+    >
+    {{ blocks.block_notes | safe }}
+    </textarea>
+
+    <div class="my-3 d-flex justify-content-center">
+      <button class="btn btn-primary me-3">Update Block</button>
+      <a href="/note/{{ title }}/page/{{ page }}" class="btn btn-danger cancel">
+        Cancel
+      </a>
+    </div>
+  </form>
+</section>
+{% endblock %} {% block script %}
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "index/layout.html" %}
 
 <div>{% block title %} Login {% endblock %}</div>
 
@@ -13,7 +13,7 @@
     "
   >
     <form
-      action="/register"
+      action="/login"
       method="post"
       style="
         min-width: 30%;
@@ -24,8 +24,7 @@
         margin: 6rem auto;
       "
     >
-      <h1 class="mb-3">Create User</h1>
-
+      <h1 class="mb-3">Login</h1>
       <input
         type="text"
         name="username"
@@ -34,8 +33,7 @@
         autofocus
         class="form-control mx-auto w-auto mb-3"
         style="min-width: 100%"
-      /><span class="text-danger">{{username}}</span>
-
+      />
       <input
         type="password"
         name="password"
@@ -44,19 +42,11 @@
         autofocus
         class="form-control mx-auto w-auto mb-3"
         style="min-width: 100%"
-      /><span class="text-danger">{{password}}</span>
-      <input
-        type="password"
-        name="confirm_password"
-        placeholder="Confirm_Password"
-        autocomplete="off"
-        autofocus
-        class="form-control mx-auto w-auto mb-3"
-        style="min-width: 100%"
-      /><span class="text-danger">{{confirm}}</span>
+      />
       <button type="submit" class="btn btn-primary" style="width: 100%">
-        Submit
+        Login
       </button>
+      <p>{{ error }}</p>
     </form>
   </section>
   {% endblock %}

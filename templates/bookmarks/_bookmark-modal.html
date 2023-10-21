@@ -1,0 +1,89 @@
+<section>
+  {% for bookmark in get_bookmark_id %}
+  <div
+    class="modal fade"
+    id="bookmark-{{ bookmark.id }}"
+    tabindex="-1"
+    aria-labelledby="bookmark-{{ bookmark.id }}Label"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="bookmark-{{ bookmark.id }}Label">
+            Bookmarks
+          </h2>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          {% for bookmarks in get_bookmark_id %}
+          <div class="mb-3 d-flex justify-content-between dropdown">
+            <p class="mb-0 ps-2">
+              <a
+                href="{{ bookmarks.bookmark_url }}"
+                alt="{{ bookmarks.bookmark_title }}"
+                target="_blank"
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+                title="Tooltip on left"
+                role="button"
+              >
+                {{ bookmarks.bookmark_title }}
+              </a>
+            </p>
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-three-dots-vertical dropdown-toggle"
+                viewBox="0 0 16 16"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <a
+                  href="/note/{{ title }}/page/{{ page }}/bookmark/{{ bookmarks.id }}/edit"
+                >
+                  <path
+                    d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
+                  />
+                </a>
+              </svg>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="/note/{{ title }}/page/{{ page }}/bookmark/{{ bookmarks.id }}/edit"
+                  >
+                    Edit
+                  </a>
+                </li>
+                <form
+                  action="/note/{{ title }}/page/{{ page }}/bookmark/{{ bookmarks.id }}"
+                  method="DELETE"
+                >
+                  <li>
+                    <input
+                      type="submit"
+                      class="dropdown-item btn btn-primary"
+                      value="Delete"
+                    />
+                  </li>
+                </form>
+              </ul>
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</section>

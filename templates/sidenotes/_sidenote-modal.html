@@ -23,9 +23,7 @@
         <div class="modal-body">
           <div class="mb-3 p-3">
             {% for sidenote in get_sidenote_id %}
-            <div
-              class="mb-3 border border-1 p-3 d-flex justify-content-between dropdown"
-            >
+            <div class="mb-3 d-flex justify-content-between dropdown">
               <p class="mb-0 d-flex flex-column">
                 <span
                   data-bs-toggle="tooltip"
@@ -66,21 +64,22 @@
                       >Edit</a
                     >
                   </li>
-                  <li><a class="dropdown-item" href="#">Delete</a></li>
+                  <form
+                    action="/note/{{ title }}/page/{{ page }}/sidenote/{{ sidenote.id}}"
+                  >
+                    <li>
+                      <input
+                        type="submit"
+                        value="Delete"
+                        class="dropdown-item btn btn-primary"
+                      />
+                    </li>
+                  </form>
                 </ul>
               </span>
             </div>
             {% endfor %}
           </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>

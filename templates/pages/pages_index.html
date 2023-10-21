@@ -1,0 +1,68 @@
+{% extends "index/layout.html" %}
+
+<div>{% block title %} Note Page {% endblock %}</div>
+
+{% block body %}
+<section class="dashboard mt-4">
+  <div>{% include 'notes/_note_index_body.html' %}</div>
+  <article class="row">
+    {% for page in pages %}
+    <div class="col-xl-3 mb-4">
+      <div
+        class="card d-flex flex-column justify-content-center align-items-center pb-3"
+      >
+        <span
+          class="dropstart"
+          style="position: absolute; top: 0.75rem; right: 0.75rem"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-three-dots-vertical dropdown-toggle"
+            viewBox="0 0 16 16"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <a href="/note/{{ title }}/edit">
+              <path
+                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
+              />
+            </a>
+          </svg>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <a
+                class="dropdown-item"
+                href="/note/{{ title }}/page/{{ page.page_title }}/edit"
+              >
+                Edit
+              </a>
+            </li>
+            <form action="/note/{{ title }}/page/{{ page.page_title }}/delete">
+              <li>
+                <input
+                  type="submit"
+                  value="Delete"
+                  class="dropdown-item btn btn-primary"
+                />
+              </li>
+            </form>
+          </ul>
+        </span>
+        <div class="card-body">
+          <h3 class="pt-3 px-1">
+            <a href="/note/{{ title }}/page/{{ page.page_title }}">
+              {{ page.page_title | capitalize }}
+            </a>
+          </h3>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </article>
+</section>
+{% endblock %} {% block footer %} {% include "index/_footer.html" %} {% endblock
+%}

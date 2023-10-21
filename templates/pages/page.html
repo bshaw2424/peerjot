@@ -1,0 +1,64 @@
+{% extends "index/layout.html" %}
+<div>{% block title %} note page {% endblock %}</div>
+
+{% block body %}
+<section class="dashboard mt-4">
+  <article class="row">
+    <div>{% include 'pages/_page_layout.html' %}</div>
+  </article>
+  <article class="mb-3">
+    <table class="table table-striped">
+      {% if block_count < 1 %}
+      <div>add a new block</div>
+      {% else %}
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Date</th>
+          <th scope="col">Author</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+
+      <tbody class="table-striped">
+        {% for block in blocks %}
+        <tr>
+          <td data-bs-toggle="modal" data-bs-target="#block-{{ block.id }}">
+            {{ block.block_title }}
+          </td>
+          <td>{{ block.created_on.strftime("%x") }}</td>
+          {% for user in get_user%}
+          <td>{{ user.username }}</td>
+          {% endfor %}
+          <td>
+            <div class="float-end">
+              <a
+                href="/note/{{ title }}/page/{{ page }}/block/{{block.id}}/edit"
+                type="button"
+                class="btn btn-primary"
+                role="button"
+              >
+                Edit
+              </a>
+            </div>
+          </td>
+          <td>
+            <form
+              action="/note/{{ title }}/page/{{ page }}/block/{{ block.id }}"
+              method="DELETE"
+            >
+              <button class="btn btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      {% endif %}
+    </table>
+    {% include 'blocks/_block-data.html' %} {% include
+    'bookmarks/_bookmark-modal.html' %} {% include
+    'sidenotes/_sidenote-modal.html' %}
+  </article>
+</section>
+{% endblock %} {% block footer %} {% include "index/_footer.html" %} {% endblock
+%}

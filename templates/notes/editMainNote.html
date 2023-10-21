@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+<div>{% block title %} Edit Note {% endblock %}</div>
+{% block body %}
+<article
+  style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  "
+>
+  >
+  <form
+    action="/notes/{{ notes.note_title }}/edit"
+    method="post"
+    style="
+      min-width: 30%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 6rem auto;
+    "
+  >
+    <h1 class="mb-3">Edit Note</h1>
+    <input
+      type="text"
+      class="form-control p-2 mb-3 block-title"
+      name="title"
+      autocomplete="off"
+      autofocus
+      class="form-control mx-auto w-auto mb-3"
+      style="min-width: 100%"
+      value="{{ notes.note_title }}"
+    />
+    <input
+      type="text"
+      name="note-subject"
+      placeholder="Sub Title (ex... Python)"
+      autocomplete="off"
+      autofocus
+      class="form-control mx-auto w-auto mb-3"
+      style="min-width: 100%"
+      value="{{ notes.note_subject }}"
+    />
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-primary me-3" style="width: 100%">Save</button>
+      <a href="/notes" class="btn btn-danger">Cancel</a>
+    </div>
+  </form>
+</article>
+{% endblock %}

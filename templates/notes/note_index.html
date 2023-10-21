@@ -1,0 +1,84 @@
+{% extends "index/layout.html" %}
+
+<div>{% block title %} note page {% endblock %}</div>
+
+{% block body %}
+<section class="dashboard mt-4" style="min-height: 81.5vh">
+  <div>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <h3 class="bg-dark py-3 text-center text-white mb-3 rounded">
+      {% for category, message in messages %} {{ message }} {% endfor %}
+    </h3>
+    {% endif %} {% endwith %}
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <h1 class="mb-3">Notes - {{count}}</h1>
+    <div>
+      <a href="/notes/new" class="dashboard-btn btn btn-primary">New Note</a>
+    </div>
+  </div>
+  {% if count < 1 %}
+  <div>{{count_message}}</div>
+  {% else %}
+  <article class="row">
+    {% for note in notes %}
+    <div class="col-xs-6 col-md-6 col-xl-3 mb-0">
+      <div
+        class="card d-flex flex-column justify-content-center align-items-center mb-4"
+        style="position: relative"
+      >
+        <span
+          class="dropstart"
+          style="position: absolute; top: 0.75rem; right: 0.75rem"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-three-dots-vertical dropdown-toggle"
+            viewBox="0 0 16 16"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <a href="/notes/{{ title }}/edit">
+              <path
+                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
+              />
+            </a>
+          </svg>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <a class="dropdown-item" href="/notes/{{ note.note_title }}/edit">
+                Edit
+              </a>
+            </li>
+            <form action="/notes/{{ note.id }}/delete">
+              <li>
+                <input
+                  type="submit"
+                  value="Delete"
+                  class="dropdown-item btn btn-primary"
+                />
+              </li>
+            </form>
+          </ul>
+        </span>
+        <div class="card-body">
+          <h3 class="card-title text-center px-3">
+            <a href="/notes/{{note.note_title}}">{{ note.note_title }}</a>
+          </h3>
+        </div>
+        <div class="card-footer" style="width: 100%">
+          <p class="card-text mb-2 text-center">{{ note.note_subject }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %} {% endif %}
+  </article>
+</section>
+{% endblock %} {% block footer %} {% include "index/_footer.html" %} {% endblock
+%}

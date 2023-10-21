@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+<div>{% block title %} note page {% endblock %}</div>
+
+{% block body %} {% include '_note_index_body.html' %}
+<article class="row">
+  {% for note in notes %}
+  <div class="col-xl-3">
+    <div
+      class="card d-flex flex-column justify-content-center align-items-center"
+    >
+      <div class="card-body">
+        <h3 class="card-title">
+          <a href="/notes/{{ note.note_title }}">{{ note.note_title }}sss</a>
+        </h3>
+        <p class="card-text">{{ note.note_subject }}</p>
+        <span>{{ note.created_on.strftime("%x") }}</span>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</article>
+<section class="py-3" style="min-height: 100vh">
+  {% include '_page_layout.html' %}
+</section>
+
+{% endblock %}

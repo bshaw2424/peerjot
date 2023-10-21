@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "index/layout.html" %}
 
 <div>{% block title %} Full View Page {% endblock %}</div>
 {% block body %}
@@ -14,15 +14,28 @@
   <h1 class="mb-3">
     ({{ title | capitalize }}) - {{ page | capitalize }} Notes
   </h1>
-  {% for page in full_page %}
+  {% if block_count == 0 and bookmark_count == 0 %}
+  <div class="container" style="height: 50%; width: 50%">
+    <img
+      style="object-fit: fill; height: 100%; width: 100%"
+      src="/static/images/no_data_displace.jpg"
+      alt="No Notes Displayed"
+    />
+  </div>
+  {% else %} {% if block_count < 1 %}
+  <div></div>
+  {% else %} {% for page in full_page %}
   <div style="width: 100%">
     <p>{{ page.block_title }}</p>
     <div>{{ page.block_notes | safe }}</div>
   </div>
-  {% endfor %}
+  {% endfor %} {% endif%}
 </article>
 
-<section class="mb-3">
+<section class="mb-4">
+  {% if bookmark_count < 1 %}
+  <div></div>
+  {% else %}
   <h2 class="bg-dark text-white p-3">Useful Resources</h2>
   {% for bookmark in bookmarks %}
 
@@ -33,15 +46,6 @@
     <span>{{ bookmark.bookmark_url }}</span>
   </div>
 
-  {% endfor %}
+  {% endfor %} {% endif %} {% endif %}
 </section>
-<div class="mb-3 d-flex align-items-center" style="width: 100%">
-  <a
-    style="width: 40%; margin: 0 auto"
-    class="btn btn-danger"
-    href="/note/{{ title }}/page/{{ page }}"
-  >
-    Exit
-  </a>
-</div>
 {% endblock %}
