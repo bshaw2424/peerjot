@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
+from slugify import slugify
 import datetime
 
 db = SQLAlchemy()
@@ -28,16 +29,24 @@ class Notes(db.Model):
     note_title = db.Column(db.String(150), nullable=False)
     note_subject = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
+    note_slug = db.Column(db.String(150), unique=True)
 
     # Define the relationship with Blocks
     notes = db.relationship('Users', back_populates='users')
     pages = db.relationship('Page', back_populates='note', cascade='delete')
 
-    def __init__(self, user_id, note_title, note_subject, created_on):
+
+@db.event.listens_for(Notes, 'before_insert')
+@db.event.listens_for(Notes, 'before_update')
+def generate_note_slug(mapper, connection, target):
+    target.note_slug = slugify(str(target.note_title))
+
+    def __init__(self, user_id, note_title, note_subject, created_on, note_slug):
         self.user_id = user_id
         self.note_title = note_title
         self.note_subject = note_subject
         self.created_on = created_on
+        self.note_slug = note_slug
 
 
 class Page(db.Model):
@@ -47,6 +56,7 @@ class Page(db.Model):
         'notes.id'), nullable=False)
     page_title = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
+    page_slug = db.Column(db.String(150), unique=True)
 
     # relationship wit notes
     note = db.relationship('Notes', back_populates='pages')
@@ -58,10 +68,17 @@ class Page(db.Model):
     sidenotes = db.relationship(
         'SideNotes', back_populates='sidenote', cascade='delete')
 
-    def __init__(self, page_id, page_title, created_on):
+
+@db.event.listens_for(Page, 'before_insert')
+@db.event.listens_for(Page, 'before_update')
+def generate_page_slug(mapper, connection, target):
+    target.page_slug = slugify(str(target.page_title))
+
+    def __init__(self, page_id, page_title, created_on, page_slug):
         self.page_id = page_id
         self.page_title = page_title
         self.created_on = created_on
+        self.page_slug = page_slug
 
 
 class Blocks(db.Model):
