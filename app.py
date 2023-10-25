@@ -50,14 +50,25 @@ def check_login(view_func):
     return wrapped_view
 
 
+# index routes blueprint
 app.register_blueprint(main, url_prefix='/')
+
+# notes route blueprint
+app.register_blueprint(note, url_prefix='/notes')
+
+# blocks route blueprint
 app.register_blueprint(
     blocks, url_prefix='/note/<string:block_title>/page/<string:block_page>/block')
-app.register_blueprint(
-    bookmarks, url_prefix='/note/<string:bookmark_title>/page/<string:bookmark_page>/bookmark')
-app.register_blueprint(note, url_prefix='/notes')
+
+# pages route blueprint
 app.register_blueprint(
     pages, url_prefix='/note/<string:page_title>/page/<string:page_name>')
+
+# bookmarks route blueprint
+app.register_blueprint(
+    bookmarks, url_prefix='/note/<string:bookmark_title>/page/<string:bookmark_page>/bookmark')
+
+# sidenotes route blueprint
 app.register_blueprint(
     sidenotes, url_prefix='/note/<string:sidenote_title>/page/<string:sidenote_page>/sidenote')
 
