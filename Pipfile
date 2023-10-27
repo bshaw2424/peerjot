@@ -13,6 +13,7 @@ flask-migrate = "*"
 flask-session = "*"
 wtforms = "*"
 bleach = "*"
+python-slugify = "*"
 
 [dev-packages]
 
