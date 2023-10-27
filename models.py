@@ -13,13 +13,15 @@ class Users(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
+    email = db.Column(db.String(50), nullable=False, unique=True)
 
     users = db.relationship('Notes', back_populates='notes', cascade='delete')
 
-    def __init__(self, username, password, created_on):
+    def __init__(self, username, password, created_on, email):
         self.username = username
         self.password = password
         self.created_on = created_on
+        self.email = email
 
 
 class Notes(db.Model):
