@@ -19,6 +19,7 @@ from routes.bookmark_routes import bookmarks
 from routes.note_routes import note
 from routes.page_routes import pages
 from routes.sidnote_routes import sidenotes
+from routes.profile_routes import profiles
 
 current_date = datetime.datetime.now()
 load_dotenv()  # take environment variables from .env.
@@ -71,6 +72,10 @@ app.register_blueprint(
 # sidenotes route blueprint
 app.register_blueprint(
     sidenotes, url_prefix='/note/<string:sidenote_title>/page/<string:sidenote_page>/sidenote')
+
+# profiles route blueprint
+app.register_blueprint(
+    profiles, url_prefix='/profile')
 
 
 if __name__ == '__main__':
