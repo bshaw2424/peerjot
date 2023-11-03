@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, url_for, redirect, session, request
 from models import db, Notes, Page, SideNotes, Users, Blocks, BookMarks
+from werkzeug.security import generate_password_hash, check_password_hash
 import bleach
 import datetime
 current_date = datetime.datetime.now()
@@ -7,38 +8,42 @@ current_date = datetime.datetime.now()
 main = Blueprint('Index', __name__)
 
 
-def check_login(view_func):
-    def wrapped_view(*args, **kwargs):
-        if 'user_id' not in session:
-            # Redirect to the login page if not logged in
-            return redirect(url_for('login'))
-        return view_func(*args, **kwargs)
-    return wrapped_view
+# def check_login(view_func):
+#     def wrapped_view(*args, **kwargs):
+#         if 'user_id' not in session:
+#             # Redirect to the login page if not logged in
+#             return redirect("/login")
+#         return view_func(*args, **kwargs)
+#     return wrapped_view
 
 
-@main.route("/")
+@main.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+
+    return render_template("index/index.html")
 
 
 @main.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html")
+        return render_template("./index/register.html")
 
     else:
         username = request.form.get("username")
+        email = request.form.get("email")
         password = request.form.get("password")
         confirm = request.form.get("confirm_password")
 
-        new_user = Users(username=username, password=password,
-                         created_on=current_date)
+        hashed_password = generate_password_hash(password)
+
+        new_user = Users(username=username, password=hashed_password,
+                         created_on=current_date, email=email)
 
         db.session.add(new_user)
         db.session.commit()
         db.session.close()
 
-        return redirect(url_for("login"))
+        return redirect("/login")
 
 
 @main.route("/login", methods=["GET", "POST"])
@@ -50,23 +55,23 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    if request.method == "POST":
+    if request.method == "GET":
+
+        return render_template("index/login.html")
+    else:
         # Query database user table to get a user with the specified username
         user = db.session.query(Users).filter(
-            Users.username == username)
+            Users.username == username).first()
 
         if user:
             # A user with the specified username was found
-            if user[0].username == username and user[0].password == password:
+            if user.username == username and check_password_hash(user.password, password):
                 # Set the user_id in the session for a successful login
-                session['user_id'] = user[0].id
+                session['user_id'] = user.id
                 return redirect('/notes')
         else:
-            login_error_message = "Incorrect username or password"
-    else:
-        login_error_message = ""
-
-    return render_template("login.html", error=login_error_message)
+            return render_template("index/login.html", error="Username / Password is not correct")
+    return render_template("index/login.html", error="Username / Password is not correct")
 
 
 @main.route("/logout")

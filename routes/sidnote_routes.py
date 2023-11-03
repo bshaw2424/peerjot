@@ -13,17 +13,19 @@ def check_login(view_func):
     def wrapped_view(*args, **kwargs):
         if 'user_id' not in session:
             # Redirect to the login page if not logged in
-            return redirect(url_for('login'))
+            return redirect("/login")
         return view_func(*args, **kwargs)
     return wrapped_view
 
 
 @sidenotes.route("/new", methods=["GET", "POST"])
+@check_login
 def page_sidenote(sidenote_title, sidenote_page):
 
     if request.method == "POST":
         user = session['user_id']
         sidenote = request.form.get("sidenote")
+
         page_id = db.session.query(Page.id).filter(
             Page.page_title == sidenote_page)
 
@@ -40,21 +42,7 @@ def page_sidenote(sidenote_title, sidenote_page):
 
         return redirect(f"/note/{sidenote_title}/page/{sidenote_page}")
     else:
-        return render_template("sidenote.html", title=sidenote_title, page=sidenote_page)
-
-
-@sidenotes.route("/<int:id>", methods=["GET", "DELETE"])
-def delete_sidenote(sidenote_title, sidenote_page, id):
-
-    # Use update() on the query object to update the block's title.
-    sidenote_delete = db.session.query(
-        SideNotes).filter(SideNotes.id == id).first()
-
-    db.session.delete(sidenote_delete)
-    db.session.commit()
-    db.session.close()
-
-    return redirect(f"/note/{sidenote_title}/page/{sidenote_page}")
+        return render_template("sidenotes/sidenote.html", title=sidenote_title, page=sidenote_page)
 
 
 @sidenotes.route("/<int:id>/edit", methods=["GET", "POST"])
@@ -66,7 +54,7 @@ def note_edit(sidenote_title, sidenote_page, id):
         notes = db.session.query(SideNotes).filter(
             Page.page_title == sidenote_page, SideNotes.id == id).first()
 
-        return render_template("editNote.html", title=sidenote_title, page=sidenote_page, notes=notes, id=id)
+        return render_template("sidenotes/editNote.html", title=sidenote_title, page=sidenote_page, notes=notes, id=id)
 
     else:
 
@@ -83,3 +71,17 @@ def note_edit(sidenote_title, sidenote_page, id):
         db.session.close()
 
         return redirect(f"/note/{sidenote_title}/page/{sidenote_page}")
+
+
+@sidenotes.route("/<int:id>/", methods=["GET", "DELETE"])
+def delete_sidenote(sidenote_title, sidenote_page, id):
+
+    # Use update() on the query object to update the block's title.
+    sidenote_delete = db.session.query(
+        SideNotes).filter(SideNotes.id == id).first()
+
+    db.session.delete(sidenote_delete)
+    db.session.commit()
+    db.session.close()
+
+    return redirect(f"/note/{sidenote_title}/page/{sidenote_page}")

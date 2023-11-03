@@ -46,13 +46,13 @@ def block_form(block_title, block_page):
         finally:
             db.session.close()
 
-        return redirect(f"/note/{block_title}/page/{block_page}")
+        return redirect(f"/note/{block_title}/page/{block_page}/")
     else:
         blocking = "hello"
-        return render_template("block.html", blocks=blocking, title=block_title, page=block_page)
+        return render_template("blocks/block.html", blocks=blocking, title=block_title, page=block_page)
 
 
-@blocks.route("/<int:id>", methods=["GET", "DELETE"])
+@blocks.route("/<int:id>/", methods=["GET", "DELETE"])
 def delete_block(block_title, block_page, id):
 
     # Use update() on the query object to update the block's title.
@@ -66,16 +66,15 @@ def delete_block(block_title, block_page, id):
     return redirect(f"/note/{block_title}/page/{block_page}")
 
 
-@blocks.route("/<int:id>/edit", methods=["GET", "POST"])
+@blocks.route("<int:id>/edit", methods=["GET", "POST"])
 def page_edit(block_title, block_page, id):
 
     if request.method == "GET":
         user = session['user_id']
-
         blocks = db.session.query(Blocks).filter(
             Page.page_title == block_page, Blocks.id == id).first()
 
-        return render_template("editBlock.html", title=block_title, page=block_page, blocks=blocks, id=id)
+        return render_template("blocks/editBlock.html", title=block_title, page=block_page, blocks=blocks, id=id)
     else:
 
         block_body = request.form.get("block-body")

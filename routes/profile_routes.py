@@ -22,7 +22,14 @@ def index():
     if request.method == "GET":
         user = session['user_id']
         get_profile = db.session.query(Users).filter(Users.id == user).first()
-    return render_template("index/profile.html", profile=get_profile)
+    return render_template("index/profile.html", profile="Edit Profile", links=['one', 'two'])
+
+
+@profiles.route("/profile_index", methods=["GET", "POST"])
+def profile_index():
+    if request.method == "GET":
+        user = session['user_id']
+    return render_template("profile/profile_index.html")
 
 
 @profiles.route("/edit_username", methods=["GET", "POST"])
@@ -56,13 +63,24 @@ def edit_password():
             db.session.commit()
             db.session.close()
         else:
-            return render_template("pr/change_password.html")
+            return render_template("profile/change_password.html")
         return redirect('/notes')
+
+
+@profiles.route("/account", methods=["GET", "POST"])
+def account_settings():
+
+    if request.method == "GET":
+        return render_template("profile/account.html", account="Update Profile")
 
 
 @profiles.route("/edit_email", methods=["GET", "POST"])
 def edit_email():
-    return "email section"
+    user = session['user_id']
+    get_email_value = db.session.query(Users).filter(Users.id == user).first()
+
+    if request.method == "GET":
+        return render_template("profile/edit_email.html", value=get_email_value)
 
 
 @profiles.route("/delete_account", methods=["GET", "DELETE"])
@@ -72,8 +90,7 @@ def delete_user():
     delete_user_account = db.session.query(
         Users).filter(Users.id == user).first()
     if request.method == "GET":
-        name = delete_user_account.username
-        return render_template("profile/delete.html", name=name, id=delete_user_account.id)
+        return render_template("profile/delete.html", delete_heading="Delete Account")
     else:
         if delete_user_account.id == user:
             db.session.delete(delete_user_account)

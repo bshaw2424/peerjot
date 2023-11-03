@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, url_for, redirect, session, request, flash
 from sqlalchemy import asc, desc
-from models import db, Notes, Page, SideNotes, Users, Blocks, BookMarks
+from models import db, Notes, Page, SideNotes, Users, Blocks, BookMarks, generate_note_slug
+from static.js.functions import get_user
 import datetime
+
 current_date = datetime.datetime.now()
 
 note = Blueprint('Notes', __name__)
@@ -11,7 +13,7 @@ def check_login(view_func):
     def wrapped_view(*args, **kwargs):
         if 'user_id' not in session:
             # Redirect to the login page if not logged in
-            return redirect(url_for('login'))
+            return redirect("/login")
         return view_func(*args, **kwargs)
     return wrapped_view
 
@@ -22,37 +24,33 @@ def notes():
 
     user = session['user_id']
 
-    notes = db.session.query(
-        Notes).filter(Notes.user_id == user).order_by(Notes.created_on).all()
+    notes = db.session.query(Notes).filter(
+        Notes.user_id == user).order_by(Notes.created_on)
 
-    note_count = db.session.query(Notes).filter(
-        Notes.user_id == user).count()
+    note_count = notes.count()
 
-    return render_template("note_index.html", notes=notes, count=note_count, count_message="Currently No Notes")
+    return render_template("notes/note_index.html", notes=notes, count=note_count)
 
 
 # get form to create a new note
-@note.route("/new", methods=["GET", "POST"], endpoint='new_note')
+@note.route("/new", methods=["GET", "POST"], endpoint='new')
 @check_login
 def new_route():
 
     # create a new note
     if request.method == "POST":
         user = session['user_id']
-        # form data
 
         title = request.form.get("note-title")
         subject = request.form.get("note-subject")
-
-        title_msg = ""
-        subject_msg = ""
 
         # add the new note object to database
         new_note = Notes(
             user_id=user,
             note_title=title,
             note_subject=subject,
-            created_on=current_date
+            created_on=current_date,
+            note_slug=title
         )
 
         if not title:
@@ -71,7 +69,7 @@ def new_route():
         return redirect("/notes")
 
     else:
-        return render_template("notes.html")
+        return render_template("notes/notes.html")
 
 
 # create a new page on a current note
@@ -83,14 +81,15 @@ def create_page(title):
 
         page_title = request.form.get("title")
 
-        note_id = db.session.query(Notes.id).filter(
-            Notes.note_title == title)
+        get_note = db.session.query(Notes).filter(
+            Notes.note_title == title).first()
 
         # create new page for current note
         create_new_page = Page(
-            page_id=note_id,
+            page_id=get_note.id,
             page_title=page_title,
             created_on=current_date,
+            page_slug=page_title
         )
 
         try:
@@ -102,27 +101,24 @@ def create_page(title):
             db.session.close()
 
         flash(f"{page_title} note created", "info")
-        return redirect(f"/note/{title}")
+        return redirect(f"/notes/{title}")
     else:
-        return render_template('_pageForm.html', title=title)
+        return render_template('pages/_pageForm.html', title=title)
 
 
-@note.route("/<string:title>/", methods=['GET', 'POST'])
+@note.route("/<string:title>/")
 def note_page(title):
 
     user = session['user_id']
 
-    note_id = db.session.query(Notes.id).filter(
-        Notes.note_title == title)
+    note = db.session.query(Notes).filter(
+        Notes.note_title == title, Users.id == user).first()
 
-    pages = db.session.query(Page).filter(Page.page_id == note_id)
+    pages = db.session.query(Page).filter(Page.page_id == note.id)
 
     page_count = pages.count()
 
-    page_length = db.session.query(Page).filter(
-        Page.page_id == user).count()
-
-    return render_template("pages_index.html", title=title, page_length=page_length, pages=pages, count=page_count)
+    return render_template("pages/pages_index.html", title=title, pages=pages, count=page_count)
 
 
 @note.route("/<string:title>/edit", methods=["GET", "POST"])
@@ -134,16 +130,18 @@ def edit_note(title):
         notes = db.session.query(
             Notes).filter(Notes.user_id == user, Notes.note_title == title).first()
 
-        return render_template("editMainNote.html", notes=notes)
+        return render_template("notes/editMainNote.html", notes=notes)
     else:
         note_title = request.form.get("title")
         note_subject = request.form.get("note-subject")
 
-        note_query_update = db.session.query(
-            Notes).filter(Notes.note_title == title)
+        note_update = db.session.query(
+            Notes).filter(Notes.note_title == title).first()
 
-        note_query_update.update(
-            {"note_title": note_title, "note_subject": note_subject})
+        if note_update:
+            note_update.note_title = note_title,
+            note_update.note_subject = note_subject,
+            generate_note_slug(None, None, note_update)
 
         db.session.commit()
         db.session.close()

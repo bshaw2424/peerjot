@@ -11,12 +11,13 @@ def check_login(view_func):
     def wrapped_view(*args, **kwargs):
         if 'user_id' not in session:
             # Redirect to the login page if not logged in
-            return redirect(url_for('login'))
+            return redirect("/login")
         return view_func(*args, **kwargs)
     return wrapped_view
 
 
 @bookmarks.route("/new", methods=["GET", "POST"])
+@check_login
 def page_bookmark(bookmark_title, bookmark_page):
 
     if request.method == "POST":
@@ -47,7 +48,7 @@ def page_bookmark(bookmark_title, bookmark_page):
             db.session.close()
         return redirect(f"/note/{bookmark_title}/page/{bookmark_page}")
     else:
-        return render_template("bookmark.html", title=bookmark_title, page=bookmark_page)
+        return render_template("bookmarks/bookmark.html", title=bookmark_title, page=bookmark_page)
 
 
 @bookmarks.route("/<int:id>", methods=["GET", "DELETE"])
@@ -73,7 +74,7 @@ def bookmark_edit(bookmark_title, bookmark_page, id):
         bookmarks = db.session.query(BookMarks).filter(
             Page.page_title == bookmark_page, BookMarks.id == id).first()
 
-        return render_template("editBookmark.html", title=bookmark_title, page=bookmark_page, bookmarks=bookmarks, id=id)
+        return render_template("bookmarks/editBookmark.html", title=bookmark_title, page=bookmark_page, bookmarks=bookmarks, id=id)
     else:
 
         bookmark_url = request.form.get("bookmark_url")
