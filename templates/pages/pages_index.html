@@ -3,8 +3,22 @@
 <div>{% block title %} Note Page {% endblock %}</div>
 
 {% block body %}
-<section class="dashboard mt-4">
+<section class="dashboard mt-4" style="min-height: 81vh">
   <div>{% include 'notes/_note_index_body.html' %}</div>
+  {% if count > 0 %}
+
+  <div class="mb-4" style="display: flex">
+    <form action="" method="">
+      <select name="page_sort" id="page_sort">
+        <option value="default">Default</option>
+        <option value="new">Newest</option>
+        <option value="old">Oldest</option>
+        <option value="asc">A-Z</option>
+        <option value="desc">Z-A</option>
+      </select>
+    </form>
+    <input type="text" placeholder="Filter Notes By Title" class="ms-3" />
+  </div>
   <article class="row">
     {% for page in pages %}
     <div class="col-xl-3 mb-4">
@@ -63,6 +77,17 @@
     </div>
     {% endfor %}
   </article>
+
+  {% else %}
+  <div style="width: 38%; margin: 0 auto" class="mt-1">
+    <img
+      src="../../static/images/note_message.jpg"
+      style="object-fit: cover; height: 100%"
+      width="100%"
+      alt="no current notes"
+    />
+  </div>
+  {% endif %}
 </section>
 {% endblock %} {% block footer %} {% include "index/_footer.html" %} {% endblock
 %}
