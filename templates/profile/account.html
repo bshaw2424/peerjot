@@ -1,0 +1,66 @@
+{% extends "index/profile.html" %}
+
+<div>{% block title %} Profile {% endblock %}</div>
+
+<div>
+  {% block account %}
+  <h1>{{ account }}</h1>
+  <article
+    class="my-4"
+    style="
+      display: grid;
+      grid-template-columns: 12rem 1fr;
+      gap: 2rem;
+      min-height: 78vh;
+    "
+  >
+    <section>
+      <ul style="list-style: none">
+        <li class="nav-item">
+          <a href="/profile/edit_password" class="profile-link nav-link">
+            Edit Password
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/profile/edit_username" class="profile-link nav-link">
+            Edit Username
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/profile/edit_email" class="profile-link nav-link">
+            Edit Email
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <div><h1>{{ profile }}</h1></div>
+      {% if request.path == '/profile/edit_password' %} {% block password %}{%
+      endblock %} {% elif request.path == '/profile/edit_username' %} {% block
+      username %}{% endblock %} {% elif request.path == '/profile/edit_email' %}
+      {% block email %}{% endblock %} {% elif request.path ==
+      '/profile/delete_account' %} {% block delete %}{% endblock %} {% endif %}
+    </section>
+  </article>
+  <!-- <script>
+    const links = document.getElementsByClassName("profile-link");
+
+    for (let i = 0; i < links.length; i++) {
+      links[i].addEventListener("click", function (e) {
+        e.preventDefault();
+        // Get the URL of the clicked link
+        const target = e.target.href;
+        console.log(e);
+        let current = document.getElementsByClassName("active");
+        if (current.length > 0) {
+          current[0].className = current[0].className.replace(" active", "");
+        }
+        this.className += " active";
+      });
+    }
+  </script> -->
+  {% endblock %}
+</div>
+
+{% block footer %} {% include "index/_footer.html" %} {% endblock %}

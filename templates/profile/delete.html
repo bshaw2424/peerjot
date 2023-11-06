@@ -1,0 +1,22 @@
+{% extends "index/profile.html" %}
+
+<div>{% block title %} Delete Account {% endblock %}</div>
+{% block delete %}
+<article
+  style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  "
+>
+  <div>
+    <h1>{{ delete_heading }}</h1>
+    <p>Your account will be permnantly deleted. if you wish to continue</p>
+    <form action="">
+      <button class="btn btn-danger">delete</button>
+    </form>
+    <a class="btn btn-primary" href="/profile/account">changed my mind</a>
+  </div>
+</article>
+{% endblock %}

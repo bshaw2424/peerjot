@@ -1,0 +1,57 @@
+{% extends "index/profile.html" %}
+
+<div>{% block title %} Change Username {% endblock %}</div>
+
+<div>
+  {% block username %}
+  <section
+    style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    "
+    class="border border-1"
+  >
+    <form
+      action="/password"
+      method="post"
+      style="
+        min-width: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 6rem auto;
+      "
+    >
+      <h1 class="mb-3">Change Username</h1>
+
+      <input
+        type="text"
+        name="edit_username"
+        placeholder="Enter Username"
+        autocomplete="off"
+        autofocus
+        class="form-control mx-auto w-auto mb-3"
+        style="min-width: 100%"
+        required
+      />
+      <div style="width: 100%" class="mb-3">
+        <button class="btn btn-primary" style="width: 100%">
+          Update Username
+        </button>
+      </div>
+      <div style="width: 100%">
+        <a
+          class="btn btn-outline-danger"
+          href="/profile/account"
+          style="width: 100%"
+        >
+          Cancel
+        </a>
+      </div>
+    </form>
+  </section>
+  {% endblock %}
+</div>
