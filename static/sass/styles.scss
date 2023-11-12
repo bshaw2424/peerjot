@@ -1,0 +1,21 @@
+@use "partials/cards";
+@import "partials/variables";
+
+.badge {
+  background-color: $text-color;
+}
+
+h1 a,
+a {
+  text-decoration: $text-decoration;
+  color: $text-color;
+}
+
+// .main-notes-cards {
+//   position: relative;
+//   .dropstart {
+//     position: absolute;
+//     top: 0.75rem;
+//     right: 0.75rem;
+//   }
+// }

@@ -1,0 +1,28 @@
+.notes-cards {
+  display: none;
+  position: relative;
+}
+.notes-cards h1 a {
+  color: HSLA(0, 0%, 15.686%, 1);
+}
+.notes-cards h3 a {
+  color: HSLA(0, 0%, 15.686%, 0.6);
+}
+.notes-cards h3 a:hover {
+  color: HSLA(0, 0%, 15.686%, 1);
+}
+.notes-cards .dropstart {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+.badge {
+  background-color: #333;
+}
+
+h1 a,
+a {
+  text-decoration: none;
+  color: #333;
+}/*# sourceMappingURL=styles.css.map */
