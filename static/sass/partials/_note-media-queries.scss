@@ -1,0 +1,53 @@
+@media screen and (max-width: 721px) {
+  .navbar-brand {
+    font-size: 2rem;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  .dashboard {
+    width: 100%;
+    & > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 100%;
+    }
+    .main-button-container {
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+  }
+
+  .note-index-buttons {
+    width: 100%;
+    margin-bottom: 1rem;
+    a {
+      width: 100%;
+    }
+  }
+
+  .note-dashboard-container {
+    margin: 0;
+  }
+
+  .page-add-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0;
+    a {
+      margin: 0 0 1rem 0 !important;
+    }
+  }
+
+  .page-display-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    margin: 1rem;
+    button {
+      margin-right: 0 !important;
+      margin: 0 0 1rem 0;
+    }
+  }
+}
