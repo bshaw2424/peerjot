@@ -6,10 +6,10 @@
   color: HSLA(0, 0%, 15.686%, 1);
 }
 .notes-cards h3 a {
-  color: HSLA(0, 0%, 15.686%, 0.6);
+  color: HSLA(0, 0%, 15.686%, 0.7);
 }
 .notes-cards h3 a:hover {
-  color: HSLA(0, 0%, 15.686%, 1);
+  color: HSLA(0, 0%, 15.686%, 0.4);
 }
 .notes-cards .dropstart {
   position: absolute;
@@ -17,12 +17,123 @@
   right: 0.75rem;
 }
 
+@media screen and (max-width: 721px) {
+  .navbar-brand {
+    font-size: 2rem;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  .dashboard {
+    width: 100%;
+  }
+  .dashboard > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100%;
+  }
+  .dashboard .main-button-container {
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  .note-index-buttons {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .note-index-buttons a {
+    width: 100%;
+  }
+  .note-dashboard-container {
+    margin: 0;
+  }
+  .page-add-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0;
+  }
+  .page-add-buttons a:not(:last-child) {
+    margin: 0 0 1rem 0 !important;
+  }
+  .page-display-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+  }
+  .page-display-buttons button {
+    margin-right: 0 !important;
+    margin: 0 0 1rem 0;
+  }
+  .table td:nth-of-type(2),
+  .table th:nth-of-type(2) {
+    display: none;
+  }
+}
 .badge {
   background-color: #333;
+}
+
+h1,
+h1 a {
+  font-family: "Montserrat", sans-serif;
+}
+
+p,
+a {
+  font-family: "Roboto", sans-serif;
 }
 
 h1 a,
 a {
   text-decoration: none;
   color: #333;
+}
+
+.block-title {
+  cursor: pointer;
+}
+.block-title:hover {
+  text-decoration: underline;
+}
+
+.table th,
+.table td {
+  text-align: right;
+}
+.table th:nth-of-type(2),
+.table td:nth-of-type(2),
+.table th:nth-of-type(3),
+.table td:nth-of-type(3) {
+  text-align: center;
+}
+
+.navbar-brand {
+  font-size: 2rem;
+}
+
+.page-count-badge {
+  pointer-events: none;
+}
+
+nav {
+  background: transparent;
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  height: 3rem;
+}
+footer .container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+footer .container p {
+  font-size: 1.2rem;
+  max-height: 100%;
+  text-align: center;
+  margin: 0;
+  width: 100%;
 }/*# sourceMappingURL=styles.css.map */

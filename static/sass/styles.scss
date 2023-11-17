@@ -1,8 +1,19 @@
 @use "partials/cards";
+@use "partials/note-media-queries";
 @import "partials/variables";
 
 .badge {
   background-color: $text-color;
+}
+
+h1,
+h1 a {
+  font-family: $head-font-family;
+}
+
+p,
+a {
+  font-family: $body-font-family;
 }
 
 h1 a,
@@ -11,11 +22,51 @@ a {
   color: $text-color;
 }
 
-// .main-notes-cards {
-//   position: relative;
-//   .dropstart {
-//     position: absolute;
-//     top: 0.75rem;
-//     right: 0.75rem;
-//   }
-// }
+.block-title {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.table {
+  th,
+  td {
+    text-align: right;
+  }
+  th:nth-of-type(2),
+  td:nth-of-type(2),
+  th:nth-of-type(3),
+  td:nth-of-type(3) {
+    text-align: center;
+  }
+}
+.navbar-brand {
+  font-size: 2rem;
+}
+.page-count-badge {
+  pointer-events: none;
+}
+
+nav {
+  background: transparent;
+}
+
+footer {
+  background-color: $text-color;
+  color: $white-color;
+  height: 3rem;
+  .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      font-size: 1.2rem;
+      max-height: 100%;
+      text-align: center;
+      margin: 0;
+      width: 100%;
+    }
+  }
+}
