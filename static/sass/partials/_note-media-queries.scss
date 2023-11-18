@@ -50,10 +50,37 @@
     }
   }
 
+  .block-title {
+    min-width: 100%;
+  }
+
   .table {
+    margin-top: 1rem;
     td:nth-of-type(2),
-    th:nth-of-type(2) {
+    th {
       display: none;
+    }
+  }
+
+  #profile-index {
+    grid-template-columns: 1fr;
+    min-height: 78dvh;
+    section {
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        border-bottom: 1px solid $text-color;
+        padding-bottom: 0.75rem;
+      }
+      form {
+        padding: 1rem;
+      }
+    }
+    aside {
+      height: 2.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

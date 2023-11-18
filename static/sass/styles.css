@@ -17,6 +17,13 @@
   right: 0.75rem;
 }
 
+#profile-index {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: 2rem;
+  min-height: 78vh;
+}
+
 @media screen and (max-width: 721px) {
   .navbar-brand {
     font-size: 2rem;
@@ -64,9 +71,34 @@
     margin-right: 0 !important;
     margin: 0 0 1rem 0;
   }
+  .block-title {
+    min-width: 100%;
+  }
+  .table {
+    margin-top: 1rem;
+  }
   .table td:nth-of-type(2),
-  .table th:nth-of-type(2) {
+  .table th {
     display: none;
+  }
+  #profile-index {
+    grid-template-columns: 1fr;
+    min-height: 78dvh;
+  }
+  #profile-index section h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.75rem;
+  }
+  #profile-index section form {
+    padding: 1rem;
+  }
+  #profile-index aside {
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 .badge {

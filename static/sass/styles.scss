@@ -1,6 +1,7 @@
-@use "partials/cards";
-@use "partials/note-media-queries";
 @import "partials/variables";
+@import "partials/cards";
+@import "partials/_profile";
+@import "partials/note-media-queries";
 
 .badge {
   background-color: $text-color;
