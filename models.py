@@ -10,8 +10,8 @@ class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, autoincrement=True,
                    primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False, unique=True)
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    password = db.Column(db.String(250), nullable=False, unique=True)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
     email = db.Column(db.String(50), nullable=False, unique=True)
 
@@ -31,7 +31,7 @@ class Notes(db.Model):
     note_title = db.Column(db.String(150), nullable=False, unique=True)
     note_subject = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
-    note_slug = db.Column(db.String(150), unique=True)
+    note_slug = db.Column(db.String(150))
 
     # Define the relationship with Blocks
     notes = db.relationship('Users', back_populates='users')
