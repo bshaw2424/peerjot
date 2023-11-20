@@ -19,3 +19,14 @@
     right: 0.75rem;
   }
 }
+
+.card {
+  position: relative;
+  .card-body {
+    h5 {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+    }
+  }
+}
