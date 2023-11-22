@@ -28,8 +28,8 @@ class Notes(db.Model):
     __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True,)
     user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
-    note_title = db.Column(db.String(150), nullable=False, unique=True)
-    note_subject = db.Column(db.String(150), nullable=False)
+    note_title = db.Column(db.String(150), nullable=False)
+    note_subject = db.Column(db.String(150))
     created_on = db.Column(db.DateTime, default=datetime.datetime.now())
     note_slug = db.Column(db.String(150))
 
@@ -56,7 +56,7 @@ class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True,)
     page_id = db.Column(db.Integer, ForeignKey(
         'notes.id'), nullable=False)
-    page_title = db.Column(db.String(150), unique=True, nullable=False)
+    page_title = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.datetime.now)
     page_slug = db.Column(db.String(150))
 
