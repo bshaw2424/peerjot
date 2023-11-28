@@ -26,9 +26,14 @@ def index():
 @main.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("./index/register.html")
-
+        return render_template("index/register.html")
     else:
+        name_list = []
+        check_username = db.session.query(Users).all()
+
+        for names in check_username:
+            name_list.append(names.username)
+
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
@@ -38,11 +43,21 @@ def register():
 
         new_user = Users(username=username, password=hashed_password,
                          created_on=current_date, email=email)
+        password_message = ""
+        username_message = ""
 
-        db.session.add(new_user)
-        db.session.commit()
-        db.session.close()
+        if password != confirm:
+            password_message = "Password does not match!"
 
+        if username in name_list:
+            username_message = "Username not available!"
+
+        if username_message or password_message:
+            return render_template("index/register.html", toast=username_message, message=password_message)
+        else:
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.close()
         return redirect("/login")
 
 
@@ -77,4 +92,4 @@ def login():
 @main.route("/logout")
 def logout():
     session.pop('user_id', None)
-    return redirect("/")
+    return redirect("/login")
