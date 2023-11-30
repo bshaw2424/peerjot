@@ -6,7 +6,6 @@ from helper import error_message
 from werkzeug.security import generate_password_hash, check_password_hash
 from formModels import NoteBlock
 from dotenv import load_dotenv
-import bleach
 from models import db, Users, Notes, SideNotes, Blocks, BookMarks, Page
 from flask_migrate import Migrate
 import datetime
