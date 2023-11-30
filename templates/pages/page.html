@@ -2,7 +2,7 @@
 <div>{% block title %} Note Page {% endblock %}</div>
 
 {% block body %}
-<section class="dashboard mt-4" style="min-height: 82vh">
+<section class="dashboard mt-4" style="min-height: 80vh">
   <article class="row">
     <div>{% include 'pages/_page_layout.html' %}</div>
   </article>
@@ -28,10 +28,9 @@
             <td
               data-bs-toggle="modal"
               data-bs-target="#block-{{ block.id }}"
-              class="text-center"
-              style="outline: 2px soild red"
+              class="text-center block-title"
             >
-              {{ block.block_title }}
+              {{ block.block_title | title }}
             </td>
             <td>{{ block.created_on.strftime("%x") }}</td>
 
@@ -40,7 +39,7 @@
                 <a
                   href="/note/{{ title }}/page/{{ page.page_title }}/block/{{ block.id }}/edit"
                   type="button"
-                  class="btn btn-primary"
+                  class="btn btn-sm btn-outline-primary"
                   role="button"
                 >
                   Edit
@@ -48,12 +47,14 @@
               </div>
             </td>
             <td>
-              <form
-                action="/note/{{ title }}/page/{{ page.page_title }}/block/{{ block.id }}"
-                method="DELETE"
-              >
-                <button class="btn btn-danger">Delete</button>
-              </form>
+              <div class="float-start">
+                <form
+                  action="/note/{{ title }}/page/{{ page.page_title }}/block/{{ block.id }}"
+                  method="DELETE"
+                >
+                  <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+              </div>
             </td>
           </tr>
           {% endfor %}

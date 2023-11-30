@@ -60,12 +60,14 @@
                   <li>
                     <a
                       class="dropdown-item"
-                      href="/note/{{ title }}/page/{{ page }}/note/{{ sidenote.id }}/edit"
-                      >Edit</a
+                      href="/note/{{ title }}/page/{{ page.page_title }}/sidenote/{{ sidenote.id }}/edit"
                     >
+                      Edit
+                    </a>
                   </li>
                   <form
-                    action="/note/{{ title }}/page/{{ page }}/sidenote/{{ sidenote.id}}"
+                    action="/note/{{ title }}/page/{{ page.page_title }}/sidenote/{{ sidenote.id}}"
+                    method="DELETE"
                   >
                     <li>
                       <input

@@ -11,12 +11,31 @@
   "
 >
   <div>
-    <h1>{{ delete_heading }}</h1>
+    <h1 class="text-center main-heading">{{ delete_heading }}</h1>
     <p>Your account will be permnantly deleted. if you wish to continue</p>
-    <form action="">
-      <button class="btn btn-danger">delete</button>
-    </form>
-    <a class="btn btn-primary" href="/profile/account">changed my mind</a>
+    <div class="d-flex justify-content-center align-items-center">
+      <form
+        action="/profile/delete_account"
+        method="post"
+        class="me-3"
+        id="deleteForm"
+      >
+        <button class="btn btn-danger" id="delete_button">Delete</button>
+        <input type="hidden" name="_method" value="DELETE" />
+      </form>
+      <a class="btn btn-primary" href="/profile/account">Changed my mind</a>
+    </div>
   </div>
 </article>
+<script>
+  document
+    .getElementById("delete_button")
+    .addEventListener("click", function () {
+      delete_message = confirm("Are you sure you want to delete this profile?");
+
+      if (confirm) {
+        document.getElementById("deleteForm").submit();
+      }
+    });
+</script>
 {% endblock %}

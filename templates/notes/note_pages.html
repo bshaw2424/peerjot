@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-<div>{% block title %} note page {% endblock %}</div>
+<div>{% block title %} Note Page {% endblock %}</div>
 
 {% block body %} {% include '_note_index_body.html' %}
 <article class="row">
@@ -11,9 +11,9 @@
     >
       <div class="card-body">
         <h3 class="card-title">
-          <a href="/notes/{{ note.note_title }}">{{ note.note_title }}sss</a>
+          <a href="/notes/{{ note.note_title }}">{{ note.note_title }}</a>
         </h3>
-        <p class="card-text">{{ note.note_subject }}</p>
+        <p class="card-text">{{ note.note_subject }}ssss</p>
         <span>{{ note.created_on.strftime("%x") }}</span>
       </div>
     </div>

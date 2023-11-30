@@ -25,8 +25,6 @@ def note(page_title, page_name):
 
     note_id = db.session.query(Page).filter(Page.page_title == page_name)
 
-    username = get_user(db, Users, user).first()
-
     get_page = db.session.query(Page).filter(
         Page.page_title == page_name, Users.id == user).first()
 
@@ -56,7 +54,7 @@ def note(page_title, page_name):
     notes = db.session.query(SideNotes).filter(
         SideNotes.page_id == Page.id)
 
-    return render_template("pages/page.html", title=page_title, page=get_page_title, id=id, blocks=blocks, block_count=block_count, username=username, bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
+    return render_template("pages/page.html", title=page_title, page=get_page_title, id=id, blocks=blocks, block_count=block_count, bookmark_total=bookmark_total, sidenote_total=sidenote_total, get_sidenote_id=get_sidenote_id, get_bookmark_id=get_bookmark_id)
 
 
 @pages.route("/edit", methods=["GET", "POST"])

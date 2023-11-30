@@ -4,16 +4,8 @@
 
 <div>
   {% block account %}
-  <h1>{{ account }}</h1>
-  <article
-    class="my-4"
-    style="
-      display: grid;
-      grid-template-columns: 12rem 1fr;
-      gap: 2rem;
-      min-height: 78vh;
-    "
-  >
+  <h1 class="main-heading">{{ account }}</h1>
+  <article class="my-4">
     <section>
       <ul style="list-style: none">
         <li class="nav-item">
@@ -35,7 +27,6 @@
     </section>
 
     <section>
-      <div><h1>{{ profile }}</h1></div>
       {% if request.path == '/profile/edit_password' %} {% block password %}{%
       endblock %} {% elif request.path == '/profile/edit_username' %} {% block
       username %}{% endblock %} {% elif request.path == '/profile/edit_email' %}

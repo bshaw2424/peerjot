@@ -1,6 +1,6 @@
 {% extends "index/layout.html" %}
 
-<div>{% block title %} New Side Note {% endblock %}</div>
+<div>{% block title %} Add New Side Note {% endblock %}</div>
 {% block body %}
 <article
   style="
@@ -22,12 +22,16 @@
       margin: 6rem auto;
     "
   >
-    <h1 class="mb-3">Create Sidenote</h1>
+    <h1 class="mb-3 main-heading">Create New Sidenote</h1>
+    <p>
+      *** Set a quick reminder about anything pertaining to notes such as
+      thoughs, upcoming test, or important requirements. ***
+    </p>
     <input
       type="text"
-      class="form-control p-2 mb-3 block-title"
+      class="form-control p-2 mb-3"
       name="sidenote"
-      placeholder="Enter Page Title"
+      placeholder="Side Note Details ..."
       autocomplete="off"
       autofocus
       class="form-control mx-auto w-auto mb-3"

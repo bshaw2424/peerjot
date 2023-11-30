@@ -1,25 +1,16 @@
-{% extends "layout.html" %}
+{% extends "index/layout.html" %}
 
 <div>{% block title %} Edit Note {% endblock %}</div>
 {% block body %}
-<article
-  style="
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  "
->
+<article class="d-flex flex-column align-items-center justify-content-center">
   >
   <form
     action="/notes/{{ notes.note_title }}/edit"
     method="post"
+    class="d-flex flex-column align-items-center"
     style="
       min-width: 30%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+
       margin: 6rem auto;
     "
   >

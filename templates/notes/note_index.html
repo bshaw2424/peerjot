@@ -4,35 +4,42 @@
 
 {% block body %}
 <section class="dashboard mt-4" style="min-height: 81.5vh">
-  <div>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %}
-    <h3 class="bg-dark py-3 text-center text-white mb-3 rounded">
-      {% for category, message in messages %} {{ message }} {% endfor %}
-    </h3>
-    {% endif %} {% endwith %}
-  </div>
-
   <div class="d-flex justify-content-between">
     <h1 class="mb-3">Notes - {{count}}</h1>
-    <div>
+    <div class="note-index-buttons">
       <a href="/notes/new" class="dashboard-btn btn btn-primary">New Note</a>
     </div>
   </div>
-  {% if count < 1 %}
-  <div>{{count_message}}</div>
+  {% if count == 0 %}
+  <div>{{ count_message }}</div>
+  <div
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    "
+  >
+    <h3 style="color: gray; font-size: 2.5rem; margin-bottom: 0">
+      {{ note_message | title }}
+    </h3>
+    <div>
+      <img
+        src="../../static/images/no_note_image.svg"
+        height="500px"
+        alt="no note created yet"
+      />
+    </div>
+  </div>
   {% else %}
   <article class="row">
     {% for note in notes %}
     <div class="col-xs-6 col-md-6 col-xl-3 mb-0">
       <div
-        class="card d-flex flex-column justify-content-center align-items-center mb-4"
+        class="card notes-cards d-flex flex-column justify-content-center align-items-center mb-4"
         style="position: relative"
       >
-        <span
-          class="dropstart"
-          style="position: absolute; top: 0.75rem; right: 0.75rem"
-        >
+        <span class="dropstart">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -44,11 +51,9 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <a href="/notes/{{ title }}/edit">
-              <path
-                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
-              />
-            </a>
+            <path
+              d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
+            />
           </svg>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li>
@@ -68,8 +73,25 @@
           </ul>
         </span>
         <div class="card-body">
-          <h3 class="card-title text-center px-3">
-            <a href="/notes/{{note.note_title}}">{{ note.note_title }}</a>
+          <!-- if getting_time < timedelta(hours=1):
+            message = "New"
+        else:
+            message = "" -->
+          {% if (time - note.created_on) < elasped_time %}
+          <h5>
+            <span class="badge bg-dark text-white">{{ message }}</span>
+          </h5>
+          {% else %}
+          <h5><span class="badge bg-success"></span></h5>
+          {% endif %}
+
+          <h3 class="card-title text-center px-4 pt-4 my-3">
+            <a
+              href="/notes/{{ note.note_title }}"
+              alt="{{ note.note_title }} Note Page"
+            >
+              {{ note.note_title | title }}
+            </a>
           </h3>
         </div>
         <div class="card-footer" style="width: 100%">

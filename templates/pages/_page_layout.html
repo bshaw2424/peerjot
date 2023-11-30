@@ -2,34 +2,36 @@
   {% block body %}
   <section class="note-dashboard">
     <div>
-      <div style="width: 100%" class="py-4">
+      <div class="note-dashboard-container py-4" style="width: 100%">
         <div class="mb-3 text-center">
-          <h1>
-            <a href="/notes/{{ title }}">{{ page | capitalize }}</a>
+          <h1 class="main-heading">
+            <a href="/notes/{{ title }}">{{ page.page_title | title }}</a>
           </h1>
         </div>
-        <div class="d-flex justify-content-center">
+        <div class="page-add-buttons d-flex justify-content-center">
           <a
             class="btn btn-primary me-2"
-            href="/note/{{ title }}/page/{{ page }}/bookmark/new"
+            href="/note/{{ title }}/page/{{ page.page_title }}/bookmark/new"
           >
             Add Bookmark
           </a>
           <a
-            href="/note/{{ title }}/page/{{ page }}/block/new"
+            href="/note/{{ title }}/page/{{ page.page_title }}/block/new"
             class="btn btn-primary block me-2"
           >
             Add Note Block
           </a>
           <a
-            href="/note/{{ title }}/page/{{ page }}/sidenote/new"
+            href="/note/{{ title }}/page/{{ page.page_title }}/sidenote/new"
             class="btn btn-primary"
           >
             Add Side Note
           </a>
         </div>
       </div>
-      <div class="mt-1 mb-3 py-4 d-flex justify-content-center border border-1">
+      <div
+        class="mt-1 mb-3 py-4 page-display-buttons d-flex justify-content-center border border-1 shadow-sm"
+      >
         <button
           class="btn btn-outline-secondary me-3"
           data-bs-toggle="modal"
@@ -101,7 +103,7 @@
           </span>
         </button>
         <a
-          href="/note/{{ title }}/page/{{ page }}/full_view"
+          href="/note/{{ title }}/page/{{ page.page_title }}/full_view"
           class="btn btn-success"
           target="_blank"
         >

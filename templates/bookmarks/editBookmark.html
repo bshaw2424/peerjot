@@ -1,15 +1,8 @@
 {% extends "index/layout.html" %}
 
-<div>{% block title %} New Bookmark {% endblock %}</div>
+<div>{% block title %} Edit Bookmark {% endblock %}</div>
 {% block body %}
-<article
-  style="
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  "
->
+<article class="d-flex flex-column align-items-center justify-content-center">
   >
   <form
     action="/note/{{ title }}/page/{{ page }}/bookmark/{{ id }}/edit"

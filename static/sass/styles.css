@@ -135,13 +135,6 @@ a {
   color: #333;
 }
 
-.block-title {
-  cursor: pointer;
-}
-.block-title:hover {
-  text-decoration: underline;
-}
-
 .table th,
 .table td {
   text-align: right;

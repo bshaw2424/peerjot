@@ -60,13 +60,13 @@
                 <li>
                   <a
                     class="dropdown-item"
-                    href="/note/{{ title }}/page/{{ page }}/bookmark/{{ bookmarks.id }}/edit"
+                    href="/note/{{ title }}/page/{{ page.page_title }}/bookmark/{{ bookmarks.id }}/edit"
                   >
                     Edit
                   </a>
                 </li>
                 <form
-                  action="/note/{{ title }}/page/{{ page }}/bookmark/{{ bookmarks.id }}"
+                  action="/note/{{ title }}/page/{{ page.page_title }}/bookmark/{{ bookmarks.id }}"
                   method="DELETE"
                 >
                   <li>

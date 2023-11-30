@@ -1,0 +1,53 @@
+{% extends "index/layout.html" %}
+
+<div>{% block title %} Profile {% endblock %}</div>
+
+<div>
+  {% block body %}
+  <article class="my-4" id="profile-index">
+    <aside class="shadow-sm">
+      <ul style="list-style: none" class="nav">
+        <li class="nav-item">
+          <a href="/profile/account" class="profile-link nav-link">
+            Update Account
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/profile/delete_account" class="profile-link nav-link">
+            Delete Account
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <section>
+      {% if request.path == '/profile/edit_password' %} {% block password %}{%
+      endblock %} {% elif request.path == '/profile/edit_username' %} {% block
+      username %}{% endblock %} {% elif request.path == '/profile/edit_email' %}
+      {% block email %}{% endblock %} {% elif request.path ==
+      '/profile/delete_account' %} {% block delete %}{% endblock %} {% elif
+      request.path == '/profile/account' %} {% block account %}{% endblock %} {%
+      endif %}
+    </section>
+  </article>
+  <!-- <script>
+    const links = document.getElementsByClassName("profile-link");
+
+    for (let i = 0; i < links.length; i++) {
+      links[i].addEventListener("click", function (e) {
+        e.preventDefault();
+        // Get the URL of the clicked link
+        const target = e.target.href;
+        console.log(e);
+        let current = document.getElementsByClassName("active");
+        if (current.length > 0) {
+          current[0].className = current[0].className.replace(" active", "");
+        }
+        this.className += " active";
+      });
+    }
+  </script> -->
+  {% endblock %}
+</div>
+
+{% block footer %} {% include "index/_footer.html" %} {% endblock %}

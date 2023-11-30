@@ -1,10 +1,10 @@
 {% extends "index/layout.html" %}
 
-<div>{% block title %} Block Form {% endblock %}</div>
+<div>{% block title %} New Block {% endblock %}</div>
 {% block body %}
 
 <section class="block-dashboard my-3 text-center">
-  <h1>New <em>{{ page | capitalize }}</em> Block</h1>
+  <h1>Add New Block</h1>
   <form
     action="/note/{{ title }}/page/{{ page }}/block/new"
     method="post"

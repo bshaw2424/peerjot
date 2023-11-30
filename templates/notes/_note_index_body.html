@@ -1,8 +1,10 @@
-<section class="dashboard mt-4">
+<section class="dashboard my-4" style="border-bottom: 1px solid black">
   <div class="d-flex justify-content-between">
-    <h1 class="mb-3"><a href="/notes">{{ title }} pages</a></h1>
-    <div>
-      <button class="btn btn-outline-secondary me-3">
+    <h1 class="mb-3 main-page-heading">
+      <a href="/notes">{{ title | title }} Pages</a>
+    </h1>
+    <div class="main-button-container">
+      <span class="btn btn-outline-secondary page-count-badge me-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -22,11 +24,9 @@
           />
         </svg>
         Pages
-        <span class="badge ms-2" style="background-color: #333"
-          >{{ count }}</span
-        >
-      </button>
-      <a class="btn btn-primary" href="/notes/{{title}}/create_page">
+        <span class="badge ms-2"> {{ count }} </span>
+      </span>
+      <a class="btn btn-primary" href="/notes/{{ title }}/create_page">
         New Page
       </a>
     </div>

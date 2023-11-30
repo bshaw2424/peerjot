@@ -3,7 +3,7 @@
 <div>{% block title %} Full View Page {% endblock %}</div>
 {% block body %}
 <article
-  class="my-3"
+  class="mt-5 mb-3"
   style="
     display: flex;
     flex-direction: column;
@@ -11,8 +11,11 @@
     justify-content: center;
   "
 >
-  <h1 class="mb-3">
-    ({{ title | capitalize }}) - {{ page | capitalize }} Notes
+  <h1
+    class="mb-3 pb-3 border-bottom border-1 border-dark text-center main-heading"
+    style="width: 100%"
+  >
+    ({{ title | title }}) - {{ page.page_title | title }} Notes
   </h1>
   {% if block_count == 0 and bookmark_count == 0 %}
   <div class="container" style="height: 50%; width: 50%">
@@ -26,7 +29,7 @@
   <div></div>
   {% else %} {% for page in full_page %}
   <div style="width: 100%">
-    <p>{{ page.block_title }}</p>
+    <p>{{ page.block_title | title}}</p>
     <div>{{ page.block_notes | safe }}</div>
   </div>
   {% endfor %} {% endif%}
@@ -36,12 +39,12 @@
   {% if bookmark_count < 1 %}
   <div></div>
   {% else %}
-  <h2 class="bg-dark text-white p-3">Useful Resources</h2>
+  <h2 class="px-2">Resources</h2>
   {% for bookmark in bookmarks %}
 
   <div class="card mb-3" style="border: none">
     <span style="text-decoration: underline">
-      {{ bookmark.bookmark_title }}</span
+      {{ bookmark.bookmark_title | title }}</span
     >
     <span>{{ bookmark.bookmark_url }}</span>
   </div>

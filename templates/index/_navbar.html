@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid container d-flex justify-content-between">
-    <a class="navbar-brand" href="/">PeerNotes</a>
+    <h1>
+      <a class="navbar-brand" href="/notes"> PeerJot </a>
+    </h1>
 
     <button
       class="navbar-toggler"
@@ -38,14 +40,18 @@
             Settings
           </span>
           <ul class="dropdown-menu px-3" aria-labelledby="dropdownMenu2">
-            <li>
-              <a class="dropdown-item nav-link me-3" href="/logout"
-                >Change Password</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item nav-link me-3" href="/logout">Logout</a>
-            </li>
+            <div>
+              <li>
+                <a class="dropdown-item nav-link me-3" href="/profile/account">
+                  Profile
+                </a>
+              </li>
+            </div>
+            <div>
+              <li>
+                <a class="dropdown-item nav-link me-3" href="/logout">Logout</a>
+              </li>
+            </div>
           </ul>
         </div>
         {% endif %}

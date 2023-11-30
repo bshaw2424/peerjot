@@ -53,7 +53,7 @@ def register():
             username_message = "Username not available!"
 
         if username_message or password_message:
-            return render_template("index/register.html", toast=username_message, message=password_message)
+            return render_template("index/register.html", message=password_message)
         else:
             db.session.add(new_user)
             db.session.commit()
